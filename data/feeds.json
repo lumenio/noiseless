@@ -1,0 +1,247 @@
+[
+  {
+    "title": "OpenAI Blog",
+    "url": "https://openai.com/blog/rss.xml",
+    "siteUrl": "https://openai.com/blog",
+    "description": "Research and updates from OpenAI",
+    "topics": ["ai"]
+  },
+  {
+    "title": "Anthropic Research",
+    "url": "https://www.anthropic.com/feed",
+    "siteUrl": "https://www.anthropic.com",
+    "description": "AI safety research and updates from Anthropic",
+    "topics": ["ai"]
+  },
+  {
+    "title": "Google AI Blog",
+    "url": "https://blog.google/technology/ai/rss/",
+    "siteUrl": "https://blog.google/technology/ai/",
+    "description": "AI research and products from Google",
+    "topics": ["ai"]
+  },
+  {
+    "title": "MIT Technology Review - AI",
+    "url": "https://www.technologyreview.com/feed/",
+    "siteUrl": "https://www.technologyreview.com",
+    "description": "Technology news and analysis",
+    "topics": ["ai", "startups"]
+  },
+  {
+    "title": "The Robot Report",
+    "url": "https://www.therobotreport.com/feed/",
+    "siteUrl": "https://www.therobotreport.com",
+    "description": "Robotics news and analysis",
+    "topics": ["robotics", "hardware"]
+  },
+  {
+    "title": "IEEE Spectrum - Robotics",
+    "url": "https://spectrum.ieee.org/feeds/topic/robotics.rss",
+    "siteUrl": "https://spectrum.ieee.org/topic/robotics",
+    "description": "Robotics coverage from IEEE Spectrum",
+    "topics": ["robotics"]
+  },
+  {
+    "title": "STAT News",
+    "url": "https://www.statnews.com/feed/",
+    "siteUrl": "https://www.statnews.com",
+    "description": "Health, medicine, and life sciences reporting",
+    "topics": ["biology", "neuroscience"]
+  },
+  {
+    "title": "Nature - Neuroscience",
+    "url": "https://www.nature.com/subjects/neuroscience.rss",
+    "siteUrl": "https://www.nature.com/subjects/neuroscience",
+    "description": "Latest neuroscience research from Nature",
+    "topics": ["neuroscience", "biology"]
+  },
+  {
+    "title": "Krebs on Security",
+    "url": "https://krebsonsecurity.com/feed/",
+    "siteUrl": "https://krebsonsecurity.com",
+    "description": "In-depth security news and investigation",
+    "topics": ["security"]
+  },
+  {
+    "title": "Schneier on Security",
+    "url": "https://www.schneier.com/feed/atom/",
+    "siteUrl": "https://www.schneier.com",
+    "description": "Security analysis by Bruce Schneier",
+    "topics": ["security"]
+  },
+  {
+    "title": "The Hacker News",
+    "url": "https://feeds.feedburner.com/TheHackersNews",
+    "siteUrl": "https://thehackernews.com",
+    "description": "Cybersecurity news and analysis",
+    "topics": ["security"]
+  },
+  {
+    "title": "Hacker News - Best",
+    "url": "https://hnrss.org/best",
+    "siteUrl": "https://news.ycombinator.com",
+    "description": "Top stories from Hacker News",
+    "topics": ["programming", "startups"]
+  },
+  {
+    "title": "Lobsters",
+    "url": "https://lobste.rs/rss",
+    "siteUrl": "https://lobste.rs",
+    "description": "Computing-focused community link aggregation",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Martin Fowler",
+    "url": "https://martinfowler.com/feed.atom",
+    "siteUrl": "https://martinfowler.com",
+    "description": "Software development thought leadership",
+    "topics": ["programming"]
+  },
+  {
+    "title": "The Pragmatic Engineer",
+    "url": "https://newsletter.pragmaticengineer.com/feed",
+    "siteUrl": "https://newsletter.pragmaticengineer.com",
+    "description": "Software engineering industry insights",
+    "topics": ["programming", "startups"]
+  },
+  {
+    "title": "TechCrunch",
+    "url": "https://techcrunch.com/feed/",
+    "siteUrl": "https://techcrunch.com",
+    "description": "Startup and technology news",
+    "topics": ["startups"]
+  },
+  {
+    "title": "Paul Graham Essays",
+    "url": "https://www.aaronswartz.com/2002/feeds/pgessays.rss",
+    "siteUrl": "http://www.paulgraham.com",
+    "description": "Essays by Y Combinator co-founder Paul Graham",
+    "topics": ["startups", "programming"]
+  },
+  {
+    "title": "Quanta Magazine",
+    "url": "https://api.quantamagazine.org/feed/",
+    "siteUrl": "https://www.quantamagazine.org",
+    "description": "Mathematics, physics, and computer science journalism",
+    "topics": ["math", "biology"]
+  },
+  {
+    "title": "Terence Tao's Blog",
+    "url": "https://terrytao.wordpress.com/feed/",
+    "siteUrl": "https://terrytao.wordpress.com",
+    "description": "Mathematics research and exposition by Fields Medalist Terence Tao",
+    "topics": ["math"]
+  },
+  {
+    "title": "A List Apart",
+    "url": "https://alistapart.com/main/feed/",
+    "siteUrl": "https://alistapart.com",
+    "description": "Web design and development",
+    "topics": ["design"]
+  },
+  {
+    "title": "Smashing Magazine",
+    "url": "https://www.smashingmagazine.com/feed/",
+    "siteUrl": "https://www.smashingmagazine.com",
+    "description": "Web design and development articles",
+    "topics": ["design", "programming"]
+  },
+  {
+    "title": "Foreign Affairs",
+    "url": "https://www.foreignaffairs.com/rss.xml",
+    "siteUrl": "https://www.foreignaffairs.com",
+    "description": "International relations and geopolitics analysis",
+    "topics": ["geopolitics"]
+  },
+  {
+    "title": "War on the Rocks",
+    "url": "https://warontherocks.com/feed/",
+    "siteUrl": "https://warontherocks.com",
+    "description": "National security and foreign policy analysis",
+    "topics": ["geopolitics"]
+  },
+  {
+    "title": "Marginal Revolution",
+    "url": "https://marginalrevolution.com/feed",
+    "siteUrl": "https://marginalrevolution.com",
+    "description": "Economics commentary by Tyler Cowen and Alex Tabarrok",
+    "topics": ["economics"]
+  },
+  {
+    "title": "Matt Levine - Money Stuff",
+    "url": "https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss",
+    "siteUrl": "https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine",
+    "description": "Finance and markets commentary",
+    "topics": ["economics"]
+  },
+  {
+    "title": "Carbon Brief",
+    "url": "https://www.carbonbrief.org/feed/",
+    "siteUrl": "https://www.carbonbrief.org",
+    "description": "Climate science and energy policy",
+    "topics": ["climate"]
+  },
+  {
+    "title": "CleanTechnica",
+    "url": "https://cleantechnica.com/feed/",
+    "siteUrl": "https://cleantechnica.com",
+    "description": "Clean energy and sustainable transport news",
+    "topics": ["climate", "hardware"]
+  },
+  {
+    "title": "Ars Technica",
+    "url": "https://feeds.arstechnica.com/arstechnica/index",
+    "siteUrl": "https://arstechnica.com",
+    "description": "Technology, science, and culture reporting",
+    "topics": ["hardware", "programming"]
+  },
+  {
+    "title": "AnandTech",
+    "url": "https://www.anandtech.com/rss/",
+    "siteUrl": "https://www.anandtech.com",
+    "description": "Hardware analysis and reviews",
+    "topics": ["hardware"]
+  },
+  {
+    "title": "Data Engineering Weekly",
+    "url": "https://www.dataengineeringweekly.com/feed",
+    "siteUrl": "https://www.dataengineeringweekly.com",
+    "description": "Data engineering news and resources",
+    "topics": ["data", "programming"]
+  },
+  {
+    "title": "Towards Data Science - Medium",
+    "url": "https://towardsdatascience.com/feed",
+    "siteUrl": "https://towardsdatascience.com",
+    "description": "Data science and machine learning articles",
+    "topics": ["data", "ai"]
+  },
+  {
+    "title": "The Batch - DeepLearning.AI",
+    "url": "https://www.deeplearning.ai/the-batch/feed/",
+    "siteUrl": "https://www.deeplearning.ai/the-batch/",
+    "description": "Weekly AI news roundup by Andrew Ng",
+    "topics": ["ai", "data"]
+  },
+  {
+    "title": "Wired - Science",
+    "url": "https://www.wired.com/feed/category/science/latest/rss",
+    "siteUrl": "https://www.wired.com/category/science/",
+    "description": "Science and technology news",
+    "topics": ["biology", "climate"]
+  },
+  {
+    "title": "Stratechery",
+    "url": "https://stratechery.com/feed/",
+    "siteUrl": "https://stratechery.com",
+    "description": "Technology strategy analysis by Ben Thompson",
+    "topics": ["startups", "economics"]
+  },
+  {
+    "title": "ACM Queue",
+    "url": "https://queue.acm.org/rss/feeds/queuecontent.xml",
+    "siteUrl": "https://queue.acm.org",
+    "description": "Computing practice articles from ACM",
+    "topics": ["programming"]
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/ingest",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/embeddings",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/stats",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/cleanup",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
