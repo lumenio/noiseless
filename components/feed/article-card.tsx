@@ -62,10 +62,6 @@ export function ArticleCard({
   const [saved, setSaved] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-  const [fullContent, setFullContent] = useState<string | null>(null);
-  const [contentLoading, setContentLoading] = useState(false);
-  const [hasMore, setHasMore] = useState<boolean | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
 
@@ -105,31 +101,6 @@ export function ArticleCard({
     return reasons;
   }
 
-  async function handleReadMore() {
-    if (expanded) {
-      setExpanded(false);
-      return;
-    }
-    if (fullContent !== null) {
-      setExpanded(true);
-      return;
-    }
-    setContentLoading(true);
-    try {
-      const res = await fetch(`/api/articles/${article.id}/content`);
-      if (res.ok) {
-        const data = await res.json();
-        setFullContent(data.content);
-        setHasMore(data.hasMore);
-        if (data.hasMore) setExpanded(true);
-      }
-    } catch {
-      // Silently fail
-    } finally {
-      setContentLoading(false);
-    }
-  }
-
   return (
     <Card ref={ref} className="transition-opacity">
       <CardHeader className="pb-2">
@@ -166,28 +137,10 @@ export function ArticleCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {expanded && fullContent && hasMore ? (
-          <div className="text-sm text-muted-foreground whitespace-pre-line">
-            {fullContent}
-          </div>
-        ) : article.summary ? (
-          <p className="text-sm text-muted-foreground">
+        {article.summary && (
+          <p className="text-sm text-muted-foreground line-clamp-3">
             {article.summary}
           </p>
-        ) : null}
-        {article.summary && hasMore !== false && (
-          <button
-            type="button"
-            onClick={handleReadMore}
-            disabled={contentLoading}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {contentLoading
-              ? "Loading..."
-              : expanded
-                ? "Show less"
-                : "Read more"}
-          </button>
         )}
         <div className="flex flex-wrap gap-1.5">
           {article.topics.map((t) => (
