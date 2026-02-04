@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Rss, Menu, LogOut, User, BookOpen, Globe, PlusCircle } from "lucide-react";
+import { Rss, Menu, LogOut, User, BookOpen, Globe, PlusCircle, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -22,9 +22,10 @@ interface HeaderProps {
 }
 
 const NAV_ITEMS = [
-  { href: "/feed", label: "Feed", icon: BookOpen, authRequired: true },
-  { href: "/sources", label: "Sources", icon: Globe, authRequired: false },
-  { href: "/subscriptions", label: "Subscriptions", icon: Rss, authRequired: true },
+  { href: "/", label: "Explore", icon: Compass, authRequired: false, hideWhenAuthed: true },
+  { href: "/feed", label: "Feed", icon: BookOpen, authRequired: true, hideWhenAuthed: false },
+  { href: "/sources", label: "Sources", icon: Globe, authRequired: false, hideWhenAuthed: false },
+  { href: "/subscriptions", label: "Subscriptions", icon: Rss, authRequired: true, hideWhenAuthed: false },
 ];
 
 export function Header({ user }: HeaderProps) {
@@ -33,13 +34,13 @@ export function Header({ user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 max-w-6xl items-center px-4">
-        <Link href={user ? "/feed" : "/sources"} className="flex items-center gap-2 font-bold">
+        <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-bold">
           <Rss className="h-5 w-5 text-primary" />
           Noiseless
         </Link>
 
         <nav className="ml-8 hidden items-center gap-1 md:flex">
-          {NAV_ITEMS.filter((item) => !item.authRequired || user).map(
+          {NAV_ITEMS.filter((item) => (!item.authRequired || user) && (!item.hideWhenAuthed || !user)).map(
             (item) => (
               <Link
                 key={item.href}
@@ -107,7 +108,7 @@ export function Header({ user }: HeaderProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {NAV_ITEMS.filter((item) => !item.authRequired || user).map(
+              {NAV_ITEMS.filter((item) => (!item.authRequired || user) && (!item.hideWhenAuthed || !user)).map(
                 (item) => (
                   <DropdownMenuItem key={item.href} asChild>
                     <Link href={item.href} className="flex items-center gap-2">

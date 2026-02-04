@@ -42,11 +42,11 @@ export interface ArticleData {
 
 interface ArticleCardProps {
   article: ArticleData;
-  onLike: (id: string) => void;
-  onDislike: (id: string) => void;
-  onHide: (id: string) => void;
-  onSave: (id: string) => void;
-  onImpression: (id: string) => void;
+  onLike?: (id: string) => void;
+  onDislike?: (id: string) => void;
+  onHide?: (id: string) => void;
+  onSave?: (id: string) => void;
+  onImpression?: (id: string) => void;
 }
 
 export function ArticleCard({
@@ -66,6 +66,7 @@ export function ArticleCard({
   const impressionLogged = useRef(false);
 
   useEffect(() => {
+    if (!onImpression) return;
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
@@ -148,72 +149,76 @@ export function ArticleCard({
             </Badge>
           ))}
         </div>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setLiked(!liked);
-              setDisliked(false);
-              onLike(article.id);
-            }}
-            className={liked ? "text-primary" : ""}
-          >
-            <ThumbsUp className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setDisliked(!disliked);
-              setLiked(false);
-              onDislike(article.id);
-            }}
-            className={disliked ? "text-destructive" : ""}
-          >
-            <ThumbsDown className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setSaved(!saved);
-              onSave(article.id);
-            }}
-            className={saved ? "text-primary" : ""}
-          >
-            <Bookmark className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setHidden(true);
-              onHide(article.id);
-            }}
-          >
-            <EyeOff className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowWhy(!showWhy)}
-            className="ml-auto text-xs text-muted-foreground"
-          >
-            Why this?
-            {showWhy ? (
-              <ChevronUp className="ml-1 h-3 w-3" />
-            ) : (
-              <ChevronDown className="ml-1 h-3 w-3" />
+        {(onLike || onDislike || onHide || onSave) && (
+          <>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setLiked(!liked);
+                  setDisliked(false);
+                  onLike?.(article.id);
+                }}
+                className={liked ? "text-primary" : ""}
+              >
+                <ThumbsUp className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setDisliked(!disliked);
+                  setLiked(false);
+                  onDislike?.(article.id);
+                }}
+                className={disliked ? "text-destructive" : ""}
+              >
+                <ThumbsDown className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSaved(!saved);
+                  onSave?.(article.id);
+                }}
+                className={saved ? "text-primary" : ""}
+              >
+                <Bookmark className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setHidden(true);
+                  onHide?.(article.id);
+                }}
+              >
+                <EyeOff className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowWhy(!showWhy)}
+                className="ml-auto text-xs text-muted-foreground"
+              >
+                Why this?
+                {showWhy ? (
+                  <ChevronUp className="ml-1 h-3 w-3" />
+                ) : (
+                  <ChevronDown className="ml-1 h-3 w-3" />
+                )}
+              </Button>
+            </div>
+            {showWhy && (
+              <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
+                {getWhyReason().map((reason, i) => (
+                  <p key={i}>· {reason}</p>
+                ))}
+              </div>
             )}
-          </Button>
-        </div>
-        {showWhy && (
-          <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
-            {getWhyReason().map((reason, i) => (
-              <p key={i}>· {reason}</p>
-            ))}
-          </div>
+          </>
         )}
       </CardContent>
     </Card>
