@@ -15,6 +15,25 @@ export interface ParsedArticle {
   author: string | null;
   publishedAt: Date;
   summary: string | null;
+  content: string | null;
+}
+
+function stripHtmlPreserveBreaks(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/div>/gi, "\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 export async function parseFeed(
@@ -51,17 +70,21 @@ export async function parseFeed(
 
   const articles: ParsedArticle[] = (feed.items || [])
     .filter((item) => item.title && (item.link || item.guid))
-    .map((item) => ({
-      title: item.title!.trim(),
-      url: (item.link || item.guid || "").trim(),
-      guid: item.guid?.trim() || null,
-      author: item.creator || item["dc:creator"] || null,
-      publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
-      summary: (item.contentSnippet || item.content || "")
-        .replace(/<[^>]*>/g, "")
-        .slice(0, 1000)
-        .trim() || null,
-    }));
+    .map((item) => {
+      const rawContent = item.content || item.contentSnippet || "";
+      return {
+        title: item.title!.trim(),
+        url: (item.link || item.guid || "").trim(),
+        guid: item.guid?.trim() || null,
+        author: item.creator || item["dc:creator"] || null,
+        publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
+        summary: rawContent
+          .replace(/<[^>]*>/g, "")
+          .slice(0, 1000)
+          .trim() || null,
+        content: stripHtmlPreserveBreaks(rawContent) || null,
+      };
+    });
 
   return {
     articles,

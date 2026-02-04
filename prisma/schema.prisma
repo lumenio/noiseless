@@ -124,6 +124,7 @@ model Article {
   publishedAt  DateTime
   fetchedAt    DateTime @default(now())
   summary      String?
+  content      String?
   createdAt    DateTime @default(now())
 
   feedSource   FeedSource         @relation(fields: [feedSourceId], references: [id], onDelete: Cascade)

@@ -64,6 +64,7 @@ export async function ingestBatch(): Promise<{
               author: article.author,
               publishedAt: article.publishedAt,
               summary: article.summary,
+              content: article.content,
             },
           });
           articlesCreated++;
