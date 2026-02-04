@@ -5,6 +5,12 @@ import pg from "pg";
 const connectionString =
   process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || "";
 
+if (!connectionString) {
+  throw new Error(
+    "Missing database connection string. Set POSTGRES_PRISMA_URL or DATABASE_URL."
+  );
+}
+
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
