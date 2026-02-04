@@ -37,11 +37,19 @@ export async function ingestBatch(): Promise<{
                     guid: article.guid,
                   },
                 },
-                select: { id: true },
+                select: { id: true, content: true },
               })
             : null;
 
-          if (existing) continue;
+          if (existing) {
+            if (existing.content === null && article.content) {
+              await prisma.article.update({
+                where: { id: existing.id },
+                data: { content: article.content },
+              });
+            }
+            continue;
+          }
 
           const existingByUrl = await prisma.article.findUnique({
             where: {
@@ -50,10 +58,18 @@ export async function ingestBatch(): Promise<{
                 url: article.url,
               },
             },
-            select: { id: true },
+            select: { id: true, content: true },
           });
 
-          if (existingByUrl) continue;
+          if (existingByUrl) {
+            if (existingByUrl.content === null && article.content) {
+              await prisma.article.update({
+                where: { id: existingByUrl.id },
+                data: { content: article.content },
+              });
+            }
+            continue;
+          }
 
           await prisma.article.create({
             data: {
