@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -103,49 +102,45 @@ export function ArticleCard({
   }
 
   return (
-    <Card ref={ref} className="gap-0 transition-opacity">
-      <CardHeader className="pb-0">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>{article.feedSource.title}</span>
-              {!article.dateEstimated && (
-                <>
-                  <span className="text-xs">·</span>
-                  <span>{formatDistanceToNow(new Date(article.publishedAt))}</span>
-                </>
-              )}
-              {article.author && (
-                <>
-                  <span className="text-xs">·</span>
-                  <span>{article.author}</span>
-                </>
-              )}
-            </div>
-            <a
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1.5 block text-lg font-semibold leading-snug hover:underline"
-            >
-              {article.title}
-            </a>
+    <article ref={ref} className="border-b border-border pb-6">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>{article.feedSource.title}</span>
+            {!article.dateEstimated && (
+              <>
+                <span className="text-xs">·</span>
+                <span>{formatDistanceToNow(new Date(article.publishedAt))}</span>
+              </>
+            )}
+            {article.author && (
+              <>
+                <span className="text-xs">·</span>
+                <span>{article.author}</span>
+              </>
+            )}
           </div>
           <a
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 shrink-0 text-muted-foreground hover:text-foreground"
+            className="mt-1.5 block text-lg font-semibold leading-snug hover:underline"
           >
-            <ExternalLink className="h-4 w-4" />
+            {article.title}
           </a>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-2">
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 shrink-0 text-muted-foreground hover:text-foreground"
+        >
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      </div>
+      <div className="mt-3 space-y-2">
         {article.summary && (
-          <p className="text-sm text-foreground/80">
-            {article.summary}
-          </p>
+          <p className="text-sm text-foreground/80">{article.summary}</p>
         )}
         <div className="flex flex-wrap gap-1.5">
           {article.topics.map((t) => (
@@ -225,7 +220,7 @@ export function ArticleCard({
             )}
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </article>
   );
 }
