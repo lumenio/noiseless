@@ -21,6 +21,7 @@ export interface ArticleData {
   url: string;
   summary: string | null;
   publishedAt: string;
+  dateEstimated?: boolean;
   author: string | null;
   feedSource: {
     id: string;
@@ -116,8 +117,12 @@ export function ArticleCard({
             </a>
             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
               <span>{article.feedSource.title}</span>
-              <span className="text-xs">·</span>
-              <span>{formatDistanceToNow(new Date(article.publishedAt))}</span>
+              {!article.dateEstimated && (
+                <>
+                  <span className="text-xs">·</span>
+                  <span>{formatDistanceToNow(new Date(article.publishedAt))}</span>
+                </>
+              )}
               {article.author && (
                 <>
                   <span className="text-xs">·</span>

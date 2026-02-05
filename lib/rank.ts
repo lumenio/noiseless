@@ -15,6 +15,7 @@ interface RankedArticle {
   url: string;
   summary: string | null;
   publishedAt: Date;
+  dateEstimated: boolean;
   author: string | null;
   feedSource: {
     id: string;
@@ -152,11 +153,10 @@ export async function rankFeed(
         ? topicScores.reduce((a, b) => a + b, 0) / topicScores.length
         : 0;
 
-    // Freshness
-    const ageHours =
-      (Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60);
-    const tau = 48;
-    const freshness = Math.exp(-ageHours / tau);
+    // Freshness (neutral for articles with no real date)
+    const freshness = article.dateEstimated
+      ? 0.3
+      : Math.exp(-(Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60) / 48);
 
     const qualityScore = article.stats?.qualityScore || 0;
     const seenPenalty = recentlyShown.has(article.id) ? 1 : 0;
@@ -183,6 +183,7 @@ export async function rankFeed(
       url: article.url,
       summary: article.summary,
       publishedAt: article.publishedAt,
+      dateEstimated: article.dateEstimated,
       author: article.author,
       feedSource: {
         id: article.feedSource.id,

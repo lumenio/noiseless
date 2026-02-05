@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db";
 
 const PAGE_SIZE = 20;
-const OVERFETCH_MULTIPLIER = 4;
-const MAX_AGE_DAYS = 14;
+const OVERFETCH_MULTIPLIER = 10;
+const MAX_AGE_DAYS = 30;
 const SOURCE_CAP_TOP_20 = 2;
 
 interface PublicArticle {
@@ -11,6 +11,7 @@ interface PublicArticle {
   url: string;
   summary: string | null;
   publishedAt: Date;
+  dateEstimated: boolean;
   author: string | null;
   feedSource: {
     id: string;
@@ -37,17 +38,48 @@ export async function publicFeed(
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - MAX_AGE_DAYS);
 
-  // Resolve cursor to publishedAt for composite pagination
-  let cursorPublishedAt: Date | undefined;
+  // Resolve cursor for composite pagination (dateEstimated ASC, publishedAt DESC, id DESC)
+  let cursorArticleData: { publishedAt: Date; dateEstimated: boolean } | undefined;
   let cursorId: string | undefined;
   if (cursor) {
     const cursorArticle = await prisma.article.findUnique({
       where: { id: cursor },
-      select: { publishedAt: true },
+      select: { publishedAt: true, dateEstimated: true },
     });
     if (cursorArticle) {
-      cursorPublishedAt = cursorArticle.publishedAt;
+      cursorArticleData = cursorArticle;
       cursorId = cursor;
+    }
+  }
+
+  // Build cursor filter for sort order: dateEstimated ASC, publishedAt DESC, id DESC
+  let cursorFilter = {};
+  if (cursorArticleData && cursorId) {
+    if (!cursorArticleData.dateEstimated) {
+      // Cursor is in the dateEstimated=false group
+      cursorFilter = {
+        OR: [
+          // Same group, older or same-time-lower-id
+          {
+            dateEstimated: false,
+            OR: [
+              { publishedAt: { lt: cursorArticleData.publishedAt } },
+              { publishedAt: cursorArticleData.publishedAt, id: { lt: cursorId } },
+            ],
+          },
+          // Next group (dateEstimated=true)
+          { dateEstimated: true },
+        ],
+      };
+    } else {
+      // Cursor is in the dateEstimated=true group
+      cursorFilter = {
+        dateEstimated: true,
+        OR: [
+          { publishedAt: { lt: cursorArticleData.publishedAt } },
+          { publishedAt: cursorArticleData.publishedAt, id: { lt: cursorId } },
+        ],
+      };
     }
   }
 
@@ -60,17 +92,7 @@ export async function publicFeed(
           ? { topics: { some: { topic: { slug: topicSlug } } } }
           : {}),
       },
-      ...(cursorPublishedAt && cursorId
-        ? {
-            OR: [
-              { publishedAt: { lt: cursorPublishedAt } },
-              {
-                publishedAt: cursorPublishedAt,
-                id: { lt: cursorId },
-              },
-            ],
-          }
-        : {}),
+      ...cursorFilter,
     },
     include: {
       feedSource: {
@@ -79,7 +101,7 @@ export async function publicFeed(
         },
       },
     },
-    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+    orderBy: [{ dateEstimated: "asc" }, { publishedAt: "desc" }, { id: "desc" }],
     take: PAGE_SIZE * OVERFETCH_MULTIPLIER,
   });
 
@@ -103,6 +125,7 @@ export async function publicFeed(
     url: article.url,
     summary: article.summary,
     publishedAt: article.publishedAt,
+    dateEstimated: article.dateEstimated,
     author: article.author,
     feedSource: {
       id: article.feedSource.id,

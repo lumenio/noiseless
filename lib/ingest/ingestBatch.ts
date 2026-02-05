@@ -79,6 +79,7 @@ export async function ingestBatch(): Promise<{
               guid: article.guid,
               author: article.author,
               publishedAt: article.publishedAt,
+              dateEstimated: article.dateEstimated,
               summary: article.summary,
               content: article.content,
             },

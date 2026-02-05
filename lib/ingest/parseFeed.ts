@@ -14,6 +14,7 @@ export interface ParsedArticle {
   guid: string | null;
   author: string | null;
   publishedAt: Date;
+  dateEstimated: boolean;
   summary: string | null;
   content: string | null;
 }
@@ -77,7 +78,8 @@ export async function parseFeed(
         url: (item.link || item.guid || "").trim(),
         guid: item.guid?.trim() || null,
         author: item.creator || item["dc:creator"] || null,
-        publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
+        publishedAt: item.isoDate ? new Date(item.isoDate) : item.pubDate ? new Date(item.pubDate) : new Date(),
+        dateEstimated: !item.isoDate && !item.pubDate,
         summary: rawContent
           .replace(/<[^>]*>/g, "")
           .slice(0, 1000)

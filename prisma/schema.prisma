@@ -121,8 +121,9 @@ model Article {
   url          String
   guid         String?
   author       String?
-  publishedAt  DateTime
-  fetchedAt    DateTime @default(now())
+  publishedAt   DateTime
+  dateEstimated Boolean  @default(false)
+  fetchedAt     DateTime @default(now())
   summary      String?
   content      String?
   createdAt    DateTime @default(now())
