@@ -10,20 +10,14 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 const TOPICS = [
-  { slug: "ai", label: "AI" },
-  { slug: "robotics", label: "Robotics" },
-  { slug: "biology", label: "Biology" },
-  { slug: "neuroscience", label: "Neuroscience" },
-  { slug: "security", label: "Security" },
   { slug: "programming", label: "Programming" },
+  { slug: "systems", label: "Systems" },
+  { slug: "security", label: "Security" },
+  { slug: "ai", label: "AI" },
   { slug: "startups", label: "Startups" },
-  { slug: "math", label: "Math" },
-  { slug: "design", label: "Design" },
-  { slug: "geopolitics", label: "Geopolitics" },
-  { slug: "economics", label: "Economics" },
-  { slug: "climate", label: "Climate" },
+  { slug: "web", label: "Web" },
   { slug: "hardware", label: "Hardware" },
-  { slug: "data", label: "Data" },
+  { slug: "culture", label: "Culture" },
 ];
 
 async function main() {
@@ -49,13 +43,11 @@ async function main() {
       update: {
         title: feed.title,
         siteUrl: feed.siteUrl,
-        description: feed.description,
       },
       create: {
         title: feed.title,
         url: feed.url,
         siteUrl: feed.siteUrl,
-        description: feed.description,
         isPreinstalled: true,
       },
     });

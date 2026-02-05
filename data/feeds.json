@@ -1,247 +1,554 @@
 [
   {
-    "title": "OpenAI Blog",
-    "url": "https://openai.com/blog/rss.xml",
-    "siteUrl": "https://openai.com/blog",
-    "description": "Research and updates from OpenAI",
-    "topics": ["ai"]
+    "title": "Simon Willison",
+    "url": "https://simonwillison.net/atom/everything/",
+    "siteUrl": "https://simonwillison.net",
+    "topics": ["ai", "programming"]
   },
   {
-    "title": "Anthropic Research",
-    "url": "https://www.anthropic.com/feed",
-    "siteUrl": "https://www.anthropic.com",
-    "description": "AI safety research and updates from Anthropic",
-    "topics": ["ai"]
+    "title": "Jeff Geerling",
+    "url": "https://www.jeffgeerling.com/blog.xml",
+    "siteUrl": "https://jeffgeerling.com",
+    "topics": ["hardware", "systems"]
   },
   {
-    "title": "Google AI Blog",
-    "url": "https://blog.google/technology/ai/rss/",
-    "siteUrl": "https://blog.google/technology/ai/",
-    "description": "AI research and products from Google",
-    "topics": ["ai"]
-  },
-  {
-    "title": "MIT Technology Review - AI",
-    "url": "https://www.technologyreview.com/feed/",
-    "siteUrl": "https://www.technologyreview.com",
-    "description": "Technology news and analysis",
-    "topics": ["ai", "startups"]
-  },
-  {
-    "title": "The Robot Report",
-    "url": "https://www.therobotreport.com/feed/",
-    "siteUrl": "https://www.therobotreport.com",
-    "description": "Robotics news and analysis",
-    "topics": ["robotics", "hardware"]
-  },
-  {
-    "title": "IEEE Spectrum - Robotics",
-    "url": "https://spectrum.ieee.org/feeds/topic/robotics.rss",
-    "siteUrl": "https://spectrum.ieee.org/topic/robotics",
-    "description": "Robotics coverage from IEEE Spectrum",
-    "topics": ["robotics"]
-  },
-  {
-    "title": "STAT News",
-    "url": "https://www.statnews.com/feed/",
-    "siteUrl": "https://www.statnews.com",
-    "description": "Health, medicine, and life sciences reporting",
-    "topics": ["biology", "neuroscience"]
-  },
-  {
-    "title": "Nature - Neuroscience",
-    "url": "https://www.nature.com/subjects/neuroscience.rss",
-    "siteUrl": "https://www.nature.com/subjects/neuroscience",
-    "description": "Latest neuroscience research from Nature",
-    "topics": ["neuroscience", "biology"]
+    "title": "Sean Goedecke",
+    "url": "https://www.seangoedecke.com/rss.xml",
+    "siteUrl": "https://seangoedecke.com",
+    "topics": ["programming"]
   },
   {
     "title": "Krebs on Security",
     "url": "https://krebsonsecurity.com/feed/",
     "siteUrl": "https://krebsonsecurity.com",
-    "description": "In-depth security news and investigation",
     "topics": ["security"]
   },
   {
-    "title": "Schneier on Security",
-    "url": "https://www.schneier.com/feed/atom/",
-    "siteUrl": "https://www.schneier.com",
-    "description": "Security analysis by Bruce Schneier",
-    "topics": ["security"]
+    "title": "Daring Fireball",
+    "url": "https://daringfireball.net/feeds/main",
+    "siteUrl": "https://daringfireball.net",
+    "topics": ["culture"]
   },
   {
-    "title": "The Hacker News",
-    "url": "https://feeds.feedburner.com/TheHackersNews",
-    "siteUrl": "https://thehackernews.com",
-    "description": "Cybersecurity news and analysis",
-    "topics": ["security"]
+    "title": "Eric Migicovsky",
+    "url": "https://ericmigi.com/rss.xml",
+    "siteUrl": "https://ericmigi.com",
+    "topics": ["startups", "hardware"]
   },
   {
-    "title": "Hacker News - Best",
-    "url": "https://hnrss.org/best",
-    "siteUrl": "https://news.ycombinator.com",
-    "description": "Top stories from Hacker News",
-    "topics": ["programming", "startups"]
+    "title": "antirez",
+    "url": "http://antirez.com/rss",
+    "siteUrl": "http://antirez.com",
+    "topics": ["programming", "systems"]
   },
   {
-    "title": "Lobsters",
-    "url": "https://lobste.rs/rss",
-    "siteUrl": "https://lobste.rs",
-    "description": "Computing-focused community link aggregation",
+    "title": "Ibrahim Diallo",
+    "url": "https://idiallo.com/feed.rss",
+    "siteUrl": "https://idiallo.com",
+    "topics": ["programming", "web"]
+  },
+  {
+    "title": "Maurycy Zarzycki",
+    "url": "https://maurycyz.com/index.xml",
+    "siteUrl": "https://maurycyz.com",
     "topics": ["programming"]
   },
   {
-    "title": "Martin Fowler",
-    "url": "https://martinfowler.com/feed.atom",
-    "siteUrl": "https://martinfowler.com",
-    "description": "Software development thought leadership",
-    "topics": ["programming"]
+    "title": "Pluralistic",
+    "url": "https://pluralistic.net/feed/",
+    "siteUrl": "https://pluralistic.net",
+    "topics": ["culture"]
   },
   {
-    "title": "The Pragmatic Engineer",
-    "url": "https://newsletter.pragmaticengineer.com/feed",
-    "siteUrl": "https://newsletter.pragmaticengineer.com",
-    "description": "Software engineering industry insights",
-    "topics": ["programming", "startups"]
+    "title": "Terence Eden",
+    "url": "https://shkspr.mobi/blog/feed/",
+    "siteUrl": "https://shkspr.mobi",
+    "topics": ["web", "culture"]
   },
   {
-    "title": "TechCrunch",
-    "url": "https://techcrunch.com/feed/",
-    "siteUrl": "https://techcrunch.com",
-    "description": "Startup and technology news",
-    "topics": ["startups"]
+    "title": "lcamtuf",
+    "url": "https://lcamtuf.substack.com/feed",
+    "siteUrl": "https://lcamtuf.substack.com",
+    "topics": ["security", "systems"]
   },
   {
-    "title": "Paul Graham Essays",
-    "url": "https://www.aaronswartz.com/2002/feeds/pgessays.rss",
-    "siteUrl": "http://www.paulgraham.com",
-    "description": "Essays by Y Combinator co-founder Paul Graham",
-    "topics": ["startups", "programming"]
+    "title": "Mitchell Hashimoto",
+    "url": "https://mitchellh.com/feed.xml",
+    "siteUrl": "https://mitchellh.com",
+    "topics": ["systems", "programming"]
   },
   {
-    "title": "Quanta Magazine",
-    "url": "https://api.quantamagazine.org/feed/",
-    "siteUrl": "https://www.quantamagazine.org",
-    "description": "Mathematics, physics, and computer science journalism",
-    "topics": ["math", "biology"]
+    "title": "Dynomight",
+    "url": "https://dynomight.net/feed.xml",
+    "siteUrl": "https://dynomight.net",
+    "topics": ["culture"]
   },
   {
-    "title": "Terence Tao's Blog",
-    "url": "https://terrytao.wordpress.com/feed/",
-    "siteUrl": "https://terrytao.wordpress.com",
-    "description": "Mathematics research and exposition by Fields Medalist Terence Tao",
-    "topics": ["math"]
+    "title": "Chris Siebenmann",
+    "url": "https://utcc.utoronto.ca/~cks/space/blog/?atom",
+    "siteUrl": "https://utcc.utoronto.ca/~cks",
+    "topics": ["systems"]
   },
   {
-    "title": "A List Apart",
-    "url": "https://alistapart.com/main/feed/",
-    "siteUrl": "https://alistapart.com",
-    "description": "Web design and development",
-    "topics": ["design"]
+    "title": "Xe Iaso",
+    "url": "https://xeiaso.net/blog.rss",
+    "siteUrl": "https://xeiaso.net",
+    "topics": ["programming", "systems"]
   },
   {
-    "title": "Smashing Magazine",
-    "url": "https://www.smashingmagazine.com/feed/",
-    "siteUrl": "https://www.smashingmagazine.com",
-    "description": "Web design and development articles",
-    "topics": ["design", "programming"]
+    "title": "The Old New Thing",
+    "url": "https://devblogs.microsoft.com/oldnewthing/feed",
+    "siteUrl": "https://devblogs.microsoft.com/oldnewthing",
+    "topics": ["programming", "systems"]
   },
   {
-    "title": "Foreign Affairs",
-    "url": "https://www.foreignaffairs.com/rss.xml",
-    "siteUrl": "https://www.foreignaffairs.com",
-    "description": "International relations and geopolitics analysis",
-    "topics": ["geopolitics"]
-  },
-  {
-    "title": "War on the Rocks",
-    "url": "https://warontherocks.com/feed/",
-    "siteUrl": "https://warontherocks.com",
-    "description": "National security and foreign policy analysis",
-    "topics": ["geopolitics"]
-  },
-  {
-    "title": "Marginal Revolution",
-    "url": "https://marginalrevolution.com/feed",
-    "siteUrl": "https://marginalrevolution.com",
-    "description": "Economics commentary by Tyler Cowen and Alex Tabarrok",
-    "topics": ["economics"]
-  },
-  {
-    "title": "Matt Levine - Money Stuff",
-    "url": "https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine.rss",
-    "siteUrl": "https://www.bloomberg.com/opinion/authors/ARbTQlRLRjE/matthew-s-levine",
-    "description": "Finance and markets commentary",
-    "topics": ["economics"]
-  },
-  {
-    "title": "Carbon Brief",
-    "url": "https://www.carbonbrief.org/feed/",
-    "siteUrl": "https://www.carbonbrief.org",
-    "description": "Climate science and energy policy",
-    "topics": ["climate"]
-  },
-  {
-    "title": "CleanTechnica",
-    "url": "https://cleantechnica.com/feed/",
-    "siteUrl": "https://cleantechnica.com",
-    "description": "Clean energy and sustainable transport news",
-    "topics": ["climate", "hardware"]
-  },
-  {
-    "title": "Ars Technica",
-    "url": "https://feeds.arstechnica.com/arstechnica/index",
-    "siteUrl": "https://arstechnica.com",
-    "description": "Technology, science, and culture reporting",
-    "topics": ["hardware", "programming"]
-  },
-  {
-    "title": "AnandTech",
-    "url": "https://www.anandtech.com/rss/",
-    "siteUrl": "https://www.anandtech.com",
-    "description": "Hardware analysis and reviews",
+    "title": "Ken Shirriff",
+    "url": "https://www.righto.com/feeds/posts/default",
+    "siteUrl": "https://righto.com",
     "topics": ["hardware"]
   },
   {
-    "title": "Data Engineering Weekly",
-    "url": "https://www.dataengineeringweekly.com/feed",
-    "siteUrl": "https://www.dataengineeringweekly.com",
-    "description": "Data engineering news and resources",
-    "topics": ["data", "programming"]
-  },
-  {
-    "title": "Towards Data Science - Medium",
-    "url": "https://towardsdatascience.com/feed",
-    "siteUrl": "https://towardsdatascience.com",
-    "description": "Data science and machine learning articles",
-    "topics": ["data", "ai"]
-  },
-  {
-    "title": "The Batch - DeepLearning.AI",
-    "url": "https://www.deeplearning.ai/the-batch/feed/",
-    "siteUrl": "https://www.deeplearning.ai/the-batch/",
-    "description": "Weekly AI news roundup by Andrew Ng",
-    "topics": ["ai", "data"]
-  },
-  {
-    "title": "Wired - Science",
-    "url": "https://www.wired.com/feed/category/science/latest/rss",
-    "siteUrl": "https://www.wired.com/category/science/",
-    "description": "Science and technology news",
-    "topics": ["biology", "climate"]
-  },
-  {
-    "title": "Stratechery",
-    "url": "https://stratechery.com/feed/",
-    "siteUrl": "https://stratechery.com",
-    "description": "Technology strategy analysis by Ben Thompson",
-    "topics": ["startups", "economics"]
-  },
-  {
-    "title": "ACM Queue",
-    "url": "https://queue.acm.org/rss/feeds/queuecontent.xml",
-    "siteUrl": "https://queue.acm.org",
-    "description": "Computing practice articles from ACM",
+    "title": "Armin Ronacher",
+    "url": "https://lucumr.pocoo.org/feed.atom",
+    "siteUrl": "https://lucumr.pocoo.org",
     "topics": ["programming"]
+  },
+  {
+    "title": "Skyfall",
+    "url": "https://skyfall.dev/rss.xml",
+    "siteUrl": "https://skyfall.dev",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Gary Marcus",
+    "url": "https://garymarcus.substack.com/feed",
+    "siteUrl": "https://garymarcus.substack.com",
+    "topics": ["ai", "culture"]
+  },
+  {
+    "title": "Rachel by the Bay",
+    "url": "https://rachelbythebay.com/w/atom.xml",
+    "siteUrl": "https://rachelbythebay.com",
+    "topics": ["systems", "programming"]
+  },
+  {
+    "title": "Overreacted",
+    "url": "https://overreacted.io/rss.xml",
+    "siteUrl": "https://overreacted.io",
+    "topics": ["web", "programming"]
+  },
+  {
+    "title": "Tim Shelburne",
+    "url": "https://timsh.org/rss/",
+    "siteUrl": "https://timsh.org",
+    "topics": ["programming"]
+  },
+  {
+    "title": "John D. Cook",
+    "url": "https://www.johndcook.com/blog/feed/",
+    "siteUrl": "https://johndcook.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Giles Thomas",
+    "url": "https://gilesthomas.com/feed/rss.xml",
+    "siteUrl": "https://gilesthomas.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "matklad",
+    "url": "https://matklad.github.io/feed.xml",
+    "siteUrl": "https://matklad.github.io",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Derek Thompson",
+    "url": "https://www.theatlantic.com/feed/author/derek-thompson/",
+    "siteUrl": "https://derekthompson.org",
+    "topics": ["culture", "startups"]
+  },
+  {
+    "title": "Evan Hahn",
+    "url": "https://evanhahn.com/feed.xml",
+    "siteUrl": "https://evanhahn.com",
+    "topics": ["web", "security"]
+  },
+  {
+    "title": "Terrible Software",
+    "url": "https://terriblesoftware.org/feed/",
+    "siteUrl": "https://terriblesoftware.org",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Rakhim Davletkaliyev",
+    "url": "https://rakhim.exotext.com/rss.xml",
+    "siteUrl": "https://rakhim.exotext.com",
+    "topics": ["programming", "culture"]
+  },
+  {
+    "title": "Joan Westenberg",
+    "url": "https://joanwestenberg.com/rss",
+    "siteUrl": "https://joanwestenberg.com",
+    "topics": ["culture", "startups"]
+  },
+  {
+    "title": "Xania",
+    "url": "https://xania.org/feed",
+    "siteUrl": "https://xania.org",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Micah Lee",
+    "url": "https://micahflee.com/feed/",
+    "siteUrl": "https://micahflee.com",
+    "topics": ["security", "culture"]
+  },
+  {
+    "title": "Andrew Nesbitt",
+    "url": "https://nesbitt.io/feed.xml",
+    "siteUrl": "https://nesbitt.io",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Construction Physics",
+    "url": "https://www.construction-physics.com/feed",
+    "siteUrl": "https://construction-physics.com",
+    "topics": ["culture", "startups"]
+  },
+  {
+    "title": "Tedium",
+    "url": "https://feed.tedium.co/",
+    "siteUrl": "https://tedium.co",
+    "topics": ["culture"]
+  },
+  {
+    "title": "Susam Pal",
+    "url": "https://susam.net/feed.xml",
+    "siteUrl": "https://susam.net",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Entropic Thoughts",
+    "url": "https://entropicthoughts.com/feed.xml",
+    "siteUrl": "https://entropicthoughts.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Hillel Wayne",
+    "url": "https://buttondown.com/hillelwayne/rss",
+    "siteUrl": "https://buttondown.com/hillelwayne",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Dwarkesh Patel",
+    "url": "https://www.dwarkeshpatel.com/feed",
+    "siteUrl": "https://dwarkesh.com",
+    "topics": ["ai", "culture"]
+  },
+  {
+    "title": "Fernando Borretti",
+    "url": "https://borretti.me/feed.xml",
+    "siteUrl": "https://borretti.me",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Where's Your Ed At",
+    "url": "https://www.wheresyoured.at/rss/",
+    "siteUrl": "https://wheresyoured.at",
+    "topics": ["culture", "startups"]
+  },
+  {
+    "title": "Jay D",
+    "url": "https://jayd.ml/feed.xml",
+    "siteUrl": "https://jayd.ml",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Max Woolf",
+    "url": "https://minimaxir.com/index.xml",
+    "siteUrl": "https://minimaxir.com",
+    "topics": ["ai", "programming"]
+  },
+  {
+    "title": "George Hotz",
+    "url": "https://geohot.github.io/blog/feed.xml",
+    "siteUrl": "https://geohot.github.io",
+    "topics": ["ai", "systems"]
+  },
+  {
+    "title": "Paul Graham",
+    "url": "http://www.aaronsw.com/2002/feeds/pgessays.rss",
+    "siteUrl": "https://paulgraham.com",
+    "topics": ["startups", "culture"]
+  },
+  {
+    "title": "The Digital Antiquarian",
+    "url": "https://www.filfre.net/feed/",
+    "siteUrl": "https://filfre.net",
+    "topics": ["culture", "hardware"]
+  },
+  {
+    "title": "Jim Nielsen",
+    "url": "https://blog.jim-nielsen.com/feed.xml",
+    "siteUrl": "https://blog.jim-nielsen.com",
+    "topics": ["web"]
+  },
+  {
+    "title": "Dave Farquhar",
+    "url": "https://dfarq.homeip.net/feed/",
+    "siteUrl": "https://dfarq.homeip.net",
+    "topics": ["systems", "hardware"]
+  },
+  {
+    "title": "jyn",
+    "url": "https://jyn.dev/atom.xml",
+    "siteUrl": "https://jyn.dev",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Geoffrey Litt",
+    "url": "https://www.geoffreylitt.com/feed.xml",
+    "siteUrl": "https://geoffreylitt.com",
+    "topics": ["programming", "web"]
+  },
+  {
+    "title": "Doug Brown",
+    "url": "https://www.downtowndougbrown.com/feed/",
+    "siteUrl": "https://downtowndougbrown.com",
+    "topics": ["hardware"]
+  },
+  {
+    "title": "Brutecat",
+    "url": "https://brutecat.com/rss.xml",
+    "siteUrl": "https://brutecat.com",
+    "topics": ["security"]
+  },
+  {
+    "title": "Eli Bendersky",
+    "url": "https://eli.thegreenplace.net/feeds/all.atom.xml",
+    "siteUrl": "https://eli.thegreenplace.net",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Abort Retry Fail",
+    "url": "https://www.abortretry.fail/feed",
+    "siteUrl": "https://abortretry.fail",
+    "topics": ["culture", "hardware"]
+  },
+  {
+    "title": "Fabien Sanglard",
+    "url": "https://fabiensanglard.net/rss.xml",
+    "siteUrl": "https://fabiensanglard.net",
+    "topics": ["programming", "hardware"]
+  },
+  {
+    "title": "Old VCR",
+    "url": "https://oldvcr.blogspot.com/feeds/posts/default",
+    "siteUrl": "https://oldvcr.blogspot.com",
+    "topics": ["hardware"]
+  },
+  {
+    "title": "Bogdan the Geek",
+    "url": "https://bogdanthegeek.github.io/blog/index.xml",
+    "siteUrl": "https://bogdanthegeek.github.io",
+    "topics": ["hardware"]
+  },
+  {
+    "title": "Hugo Tunius",
+    "url": "https://hugotunius.se/feed.xml",
+    "siteUrl": "https://hugotunius.se",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Gwern Branwen",
+    "url": "https://gwern.substack.com/feed",
+    "siteUrl": "https://gwern.net",
+    "topics": ["ai", "culture"]
+  },
+  {
+    "title": "Bert Hubert",
+    "url": "https://berthub.eu/articles/index.xml",
+    "siteUrl": "https://berthub.eu",
+    "topics": ["systems", "security"]
+  },
+  {
+    "title": "Chad Nauseam",
+    "url": "https://chadnauseam.com/rss.xml",
+    "siteUrl": "https://chadnauseam.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Simone",
+    "url": "https://simone.org/feed/",
+    "siteUrl": "https://simone.org",
+    "topics": ["culture"]
+  },
+  {
+    "title": "IT Notes",
+    "url": "https://it-notes.dragas.net/feed/",
+    "siteUrl": "https://it-notes.dragas.net",
+    "topics": ["systems"]
+  },
+  {
+    "title": "Beej",
+    "url": "https://beej.us/blog/rss.xml",
+    "siteUrl": "https://beej.us",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Hey Paris",
+    "url": "https://hey.paris/index.xml",
+    "siteUrl": "https://hey.paris",
+    "topics": ["web"]
+  },
+  {
+    "title": "Daniel Wirtz",
+    "url": "https://danielwirtz.com/rss.xml",
+    "siteUrl": "https://danielwirtz.com",
+    "topics": ["web"]
+  },
+  {
+    "title": "Mat Duggan",
+    "url": "https://matduggan.com/rss/",
+    "siteUrl": "https://matduggan.com",
+    "topics": ["systems"]
+  },
+  {
+    "title": "Refactoring English",
+    "url": "https://refactoringenglish.com/index.xml",
+    "siteUrl": "https://refactoringenglish.com",
+    "topics": ["culture", "programming"]
+  },
+  {
+    "title": "Works on My Machine",
+    "url": "https://worksonmymachine.substack.com/feed",
+    "siteUrl": "https://worksonmymachine.substack.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Philip Laine",
+    "url": "https://philiplaine.com/index.xml",
+    "siteUrl": "https://philiplaine.com",
+    "topics": ["systems"]
+  },
+  {
+    "title": "Steve Blank",
+    "url": "https://steveblank.com/feed/",
+    "siteUrl": "https://steveblank.com",
+    "topics": ["startups"]
+  },
+  {
+    "title": "Max Bernstein",
+    "url": "https://bernsteinbear.com/feed.xml",
+    "siteUrl": "https://bernsteinbear.com",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Daniel Delaney",
+    "url": "https://danieldelaney.net/feed",
+    "siteUrl": "https://danieldelaney.net",
+    "topics": ["web"]
+  },
+  {
+    "title": "Troy Hunt",
+    "url": "https://www.troyhunt.com/rss/",
+    "siteUrl": "https://troyhunt.com",
+    "topics": ["security"]
+  },
+  {
+    "title": "Herman Martinus",
+    "url": "https://herman.bearblog.dev/feed/",
+    "siteUrl": "https://herman.bearblog.dev",
+    "topics": ["web", "culture"]
+  },
+  {
+    "title": "Tom Renner",
+    "url": "https://tomrenner.com/index.xml",
+    "siteUrl": "https://tomrenner.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "PixelMelt",
+    "url": "https://blog.pixelmelt.dev/rss/",
+    "siteUrl": "https://blog.pixelmelt.dev",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Martin Alderson",
+    "url": "https://martinalderson.com/feed.xml",
+    "siteUrl": "https://martinalderson.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Daniel Chase Hooper",
+    "url": "https://danielchasehooper.com/feed.xml",
+    "siteUrl": "https://danielchasehooper.com",
+    "topics": ["programming", "web"]
+  },
+  {
+    "title": "Simon Tatham",
+    "url": "https://www.chiark.greenend.org.uk/~sgtatham/quasiblog/feed.xml",
+    "siteUrl": "https://chiark.greenend.org.uk/~sgtatham",
+    "topics": ["programming", "systems"]
+  },
+  {
+    "title": "Grant Slatton",
+    "url": "https://grantslatton.com/rss.xml",
+    "siteUrl": "https://grantslatton.com",
+    "topics": ["programming"]
+  },
+  {
+    "title": "Experimental History",
+    "url": "https://www.experimental-history.com/feed",
+    "siteUrl": "https://experimental-history.com",
+    "topics": ["culture"]
+  },
+  {
+    "title": "Anil Dash",
+    "url": "https://anildash.com/feed.xml",
+    "siteUrl": "https://anildash.com",
+    "topics": ["culture", "web"]
+  },
+  {
+    "title": "Marcin Wichary",
+    "url": "https://aresluna.org/main.rss",
+    "siteUrl": "https://aresluna.org",
+    "topics": ["web"]
+  },
+  {
+    "title": "Michael Stapelberg",
+    "url": "https://michael.stapelberg.ch/feed.xml",
+    "siteUrl": "https://michael.stapelberg.ch",
+    "topics": ["systems"]
+  },
+  {
+    "title": "Miguel Grinberg",
+    "url": "https://blog.miguelgrinberg.com/feed",
+    "siteUrl": "https://miguelgrinberg.com",
+    "topics": ["programming", "web"]
+  },
+  {
+    "title": "Keygen",
+    "url": "https://keygen.sh/blog/feed.xml",
+    "siteUrl": "https://keygen.sh",
+    "topics": ["startups", "programming"]
+  },
+  {
+    "title": "Matthew Garrett",
+    "url": "https://mjg59.dreamwidth.org/data/rss",
+    "siteUrl": "https://mjg59.dreamwidth.org",
+    "topics": ["systems", "security"]
+  },
+  {
+    "title": "computer.rip",
+    "url": "https://computer.rip/rss.xml",
+    "siteUrl": "https://computer.rip",
+    "topics": ["systems", "hardware"]
+  },
+  {
+    "title": "Ted Unangst",
+    "url": "https://www.tedunangst.com/flak/rss",
+    "siteUrl": "https://tedunangst.com",
+    "topics": ["systems", "security"]
   }
 ]

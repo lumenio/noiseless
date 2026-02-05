@@ -9,20 +9,14 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const TOPIC_ICONS: Record<string, string> = {
-  ai: "🤖",
-  robotics: "🦾",
-  biology: "🧬",
-  neuroscience: "🧠",
-  security: "🔒",
   programming: "💻",
+  systems: "🖥️",
+  security: "🔒",
+  ai: "🤖",
   startups: "🚀",
-  math: "📐",
-  design: "🎨",
-  geopolitics: "🌍",
-  economics: "📈",
-  climate: "🌱",
+  web: "🌐",
   hardware: "🔧",
-  data: "📊",
+  culture: "📝",
 };
 
 interface TopicPickerProps {
