@@ -126,7 +126,7 @@ export function ArticleCard({
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1.5 text-lg font-semibold leading-snug hover:underline"
+              className="mt-1.5 block text-lg font-semibold leading-snug hover:underline"
             >
               {article.title}
             </a>
