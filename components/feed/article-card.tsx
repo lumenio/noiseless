@@ -143,7 +143,7 @@ export function ArticleCard({
       </CardHeader>
       <CardContent className="space-y-2">
         {article.summary && (
-          <p className="text-sm text-foreground/80 line-clamp-3">
+          <p className="text-sm text-foreground/80">
             {article.summary}
           </p>
         )}
