@@ -72,7 +72,7 @@ export async function parseFeed(
   const articles: ParsedArticle[] = (feed.items || [])
     .filter((item) => item.title && (item.link || item.guid))
     .map((item) => {
-      const rawContent = item.content || item.contentSnippet || "";
+      const rawContent = item.content || item["content:encoded"] || item.contentSnippet || item.summary || "";
       return {
         title: item.title!.trim(),
         url: (item.link || item.guid || "").trim(),

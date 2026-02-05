@@ -37,15 +37,18 @@ export async function ingestBatch(): Promise<{
                     guid: article.guid,
                   },
                 },
-                select: { id: true, content: true },
+                select: { id: true, content: true, summary: true },
               })
             : null;
 
           if (existing) {
-            if (existing.content === null && article.content) {
+            if ((existing.content === null && article.content) || (existing.summary === null && article.summary)) {
               await prisma.article.update({
                 where: { id: existing.id },
-                data: { content: article.content },
+                data: {
+                  ...(existing.content === null && article.content ? { content: article.content } : {}),
+                  ...(existing.summary === null && article.summary ? { summary: article.summary } : {}),
+                },
               });
             }
             continue;
@@ -58,14 +61,17 @@ export async function ingestBatch(): Promise<{
                 url: article.url,
               },
             },
-            select: { id: true, content: true },
+            select: { id: true, content: true, summary: true },
           });
 
           if (existingByUrl) {
-            if (existingByUrl.content === null && article.content) {
+            if ((existingByUrl.content === null && article.content) || (existingByUrl.summary === null && article.summary)) {
               await prisma.article.update({
                 where: { id: existingByUrl.id },
-                data: { content: article.content },
+                data: {
+                  ...(existingByUrl.content === null && article.content ? { content: article.content } : {}),
+                  ...(existingByUrl.summary === null && article.summary ? { summary: article.summary } : {}),
+                },
               });
             }
             continue;
