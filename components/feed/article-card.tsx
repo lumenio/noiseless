@@ -62,6 +62,7 @@ export function ArticleCard({
   const [saved, setSaved] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
 
@@ -124,7 +125,7 @@ export function ArticleCard({
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-1.5 block text-lg font-semibold leading-snug hover:underline"
+            className="mt-1.5 block text-xl font-semibold leading-snug hover:underline"
           >
             {article.title}
           </a>
@@ -140,7 +141,21 @@ export function ArticleCard({
       </div>
       <div className="mt-3 space-y-2">
         {article.summary && (
-          <p className="text-sm text-foreground/80">{article.summary}</p>
+          <div className="text-sm text-foreground/80">
+            {article.summary.length > 600 && !expanded ? (
+              <>
+                <p>{article.summary.slice(0, 600).trim()}...</p>
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="mt-1 text-muted-foreground hover:text-foreground"
+                >
+                  Read more
+                </button>
+              </>
+            ) : (
+              <p>{article.summary}</p>
+            )}
+          </div>
         )}
         <div className="flex flex-wrap gap-1.5">
           {article.topics.map((t) => (
