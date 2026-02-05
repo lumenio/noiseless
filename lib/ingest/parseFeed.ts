@@ -82,7 +82,6 @@ export async function parseFeed(
         dateEstimated: !item.isoDate && !item.pubDate,
         summary: rawContent
           .replace(/<[^>]*>/g, "")
-          .slice(0, 1000)
           .trim() || null,
         content: stripHtmlPreserveBreaks(rawContent) || null,
       };
