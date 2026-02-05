@@ -104,7 +104,7 @@ export function ArticleCard({
 
   return (
     <Card ref={ref} className="transition-opacity">
-      <CardHeader className="pb-1">
+      <CardHeader className="pb-0">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
