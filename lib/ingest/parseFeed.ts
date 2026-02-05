@@ -1,4 +1,5 @@
 import Parser from "rss-parser";
+import he from "he";
 
 const parser = new Parser({
   timeout: 10000,
@@ -20,21 +21,17 @@ export interface ParsedArticle {
 }
 
 function stripHtmlPreserveBreaks(html: string): string {
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n\n")
-    .replace(/<\/div>/gi, "\n")
-    .replace(/<\/li>/gi, "\n")
-    .replace(/<\/h[1-6]>/gi, "\n\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+  return he.decode(
+    html
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n\n")
+      .replace(/<\/div>/gi, "\n")
+      .replace(/<\/li>/gi, "\n")
+      .replace(/<\/h[1-6]>/gi, "\n\n")
+      .replace(/<[^>]*>/g, "")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim()
+  );
 }
 
 export async function parseFeed(
@@ -80,9 +77,7 @@ export async function parseFeed(
         author: item.creator || item["dc:creator"] || null,
         publishedAt: item.isoDate ? new Date(item.isoDate) : item.pubDate ? new Date(item.pubDate) : new Date(),
         dateEstimated: !item.isoDate && !item.pubDate,
-        summary: rawContent
-          .replace(/<[^>]*>/g, "")
-          .trim() || null,
+        summary: he.decode(rawContent.replace(/<[^>]*>/g, "").trim()) || null,
         content: stripHtmlPreserveBreaks(rawContent) || null,
       };
     });
