@@ -153,7 +153,17 @@ export function ArticleCard({
                 </button>
               </>
             ) : (
-              <p>{article.summary}</p>
+              <>
+                <p>{article.summary}</p>
+                {article.summary.length > 600 && (
+                  <button
+                    onClick={() => setExpanded(false)}
+                    className="mt-1 text-muted-foreground hover:text-foreground"
+                  >
+                    Show less
+                  </button>
+                )}
+              </>
             )}
           </div>
         )}
