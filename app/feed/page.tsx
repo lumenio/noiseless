@@ -6,6 +6,7 @@ import { FeedList } from "@/components/feed/feed-list";
 export default async function FeedPage() {
   const user = await getAuthUser();
   if (!user) redirect("/login");
+  if (!user.onboardingCompletedAt) redirect("/onboarding");
 
   const { items, nextCursor, feedRequestId } = await rankFeed(user.id);
 
