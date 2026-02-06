@@ -46,35 +46,6 @@ export async function POST(req: Request) {
     )
   );
 
-  // Auto-subscribe to top preinstalled feeds for selected topics
-  const topSources = await prisma.feedSource.findMany({
-    where: {
-      isPreinstalled: true,
-      topics: {
-        some: { topicId: { in: topics.map((t) => t.id) } },
-      },
-    },
-    take: 15,
-  });
-
-  await Promise.all(
-    topSources.map((source) =>
-      prisma.userSourceSubscription.upsert({
-        where: {
-          userId_feedSourceId: {
-            userId: user.id,
-            feedSourceId: source.id,
-          },
-        },
-        update: {},
-        create: {
-          userId: user.id,
-          feedSourceId: source.id,
-        },
-      })
-    )
-  );
-
   // Mark onboarding complete
   await prisma.user.update({
     where: { id: user.id },

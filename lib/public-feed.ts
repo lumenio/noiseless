@@ -17,6 +17,8 @@ interface PublicArticle {
     id: string;
     title: string;
     siteUrl: string | null;
+    description: string | null;
+    subscribed: boolean;
   };
   topics: { slug: string; label: string }[];
   score: number;
@@ -134,6 +136,8 @@ export async function publicFeed(
       id: article.feedSource.id,
       title: article.feedSource.title,
       siteUrl: article.feedSource.siteUrl,
+      description: article.feedSource.description,
+      subscribed: false,
     },
     topics: article.feedSource.topics.map((t) => ({
       slug: t.topic.slug,
