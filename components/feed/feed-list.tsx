@@ -159,7 +159,6 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
           article={article}
           isSourceSubscribed={subscribedSourceIds.has(article.feedSource.id)}
           onLike={(id) => handleInteraction(id, "like")}
-          onHide={(id) => handleInteraction(id, "hide")}
           onSave={(id) => handleInteraction(id, "save")}
           onImpression={logImpression}
           onToggleSubscribe={handleToggleSubscribe}

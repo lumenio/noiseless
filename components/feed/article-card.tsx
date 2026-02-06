@@ -51,7 +51,6 @@ interface ArticleCardProps {
   article: ArticleData;
   isSourceSubscribed?: boolean;
   onLike?: (id: string) => void;
-  onHide?: (id: string) => void;
   onSave?: (id: string) => void;
   onImpression?: (id: string) => void;
   onToggleSubscribe?: (sourceId: string, subscribe: boolean) => void;
@@ -62,7 +61,6 @@ export function ArticleCard({
   article,
   isSourceSubscribed,
   onLike,
-  onHide,
   onSave,
   onImpression,
   onToggleSubscribe,
@@ -70,7 +68,6 @@ export function ArticleCard({
 }: ArticleCardProps) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
@@ -93,8 +90,6 @@ export function ArticleCard({
     observer.observe(el);
     return () => observer.disconnect();
   }, [article.id, onImpression]);
-
-  if (hidden) return null;
 
   const likeCount = article.likes + (liked ? 1 : 0);
   const saveCount = article.saves + (saved ? 1 : 0);
@@ -166,16 +161,6 @@ export function ArticleCard({
                       )}
                     </Button>
                   )}
-                  {onHideSource && (
-                    <button
-                      type="button"
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full justify-center"
-                      onClick={() => onHideSource(article.feedSource.id)}
-                    >
-                      <EyeOff className="h-3 w-3" />
-                      Hide this source
-                    </button>
-                  )}
                 </div>
               </HoverCardContent>
             </HoverCard>
@@ -245,7 +230,7 @@ export function ArticleCard({
             </Badge>
           ))}
         </div>
-        {(onLike || onHide || onSave) && (
+        {(onLike || onHideSource || onSave) && (
           <TooltipProvider>
             <div className="flex items-center gap-1">
               <Tooltip>
@@ -292,15 +277,12 @@ export function ArticleCard({
                     variant="ghost"
                     size="sm"
                     className="ml-auto"
-                    onClick={() => {
-                      setHidden(true);
-                      onHide?.(article.id);
-                    }}
+                    onClick={() => onHideSource?.(article.feedSource.id)}
                   >
                     <EyeOff className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Hide from feed</TooltipContent>
+                <TooltipContent>Hide source</TooltipContent>
               </Tooltip>
             </div>
           </TooltipProvider>
