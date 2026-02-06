@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, LogOut, User, BookOpen, Globe, Compass } from "lucide-react";
+import { Menu, LogOut, User, BookOpen, Globe, Compass, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { SettingsPopover } from "@/components/settings/settings-popover";
@@ -20,6 +20,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Explore", icon: Compass, authRequired: false, hideWhenAuthed: true },
   { href: "/feed", label: "Feed", icon: BookOpen, authRequired: true, hideWhenAuthed: false },
   { href: "/sources", label: "Sources", icon: Globe, authRequired: false, hideWhenAuthed: false },
+  { href: "/about", label: "About", icon: Info, authRequired: false, hideWhenAuthed: false },
 ];
 
 export function Header() {
@@ -34,7 +35,7 @@ export function Header() {
       <div className="container mx-auto flex h-14 max-w-6xl items-center px-4">
         <Link href={isLoggedIn ? "/feed" : "/"} className="flex items-center gap-2 font-heading">
           <Image src="/logo.svg" alt="" width={20} height={20} className="dark:invert" />
-          Noiseless
+          noiseless
         </Link>
 
         <nav className="ml-8 hidden items-center gap-1 md:flex">
