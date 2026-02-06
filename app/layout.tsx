@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "@/components/layout/header";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/lib/contexts/providers";
 import "./globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
             <Header />
             <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
             <Toaster />
+            <Analytics />
           </Providers>
         </body>
       </html>
