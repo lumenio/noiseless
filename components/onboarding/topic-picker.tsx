@@ -3,21 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-
-const TOPIC_ICONS: Record<string, string> = {
-  programming: "💻",
-  systems: "🖥️",
-  security: "🔒",
-  ai: "🤖",
-  startups: "🚀",
-  web: "🌐",
-  hardware: "🔧",
-  culture: "📝",
-};
 
 interface TopicPickerProps {
   topics: { id: string; slug: string; label: string }[];
@@ -58,28 +46,19 @@ export function TopicPicker({ topics }: TopicPickerProps) {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="flex flex-wrap gap-2">
         {topics.map((topic) => {
           const isSelected = selected.has(topic.slug);
           return (
-            <Card
+            <Badge
               key={topic.slug}
-              className={cn(
-                "cursor-pointer transition-colors",
-                isSelected && "border-primary bg-primary/5"
-              )}
+              variant={isSelected ? "default" : "outline"}
+              className="cursor-pointer select-none px-4 py-2 text-sm"
               onClick={() => toggle(topic.slug)}
             >
-              <CardContent className="flex items-center gap-3 p-4">
-                <span className="text-2xl">
-                  {TOPIC_ICONS[topic.slug] || "📌"}
-                </span>
-                <span className="font-medium">{topic.label}</span>
-                {isSelected && (
-                  <Check className="ml-auto h-4 w-4 text-primary" />
-                )}
-              </CardContent>
-            </Card>
+              {topic.label}
+              {isSelected && <Check className="ml-1.5 h-3 w-3" />}
+            </Badge>
           );
         })}
       </div>
