@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { Rss, Bookmark } from "lucide-react";
 import { ArticleCard, ArticleData } from "./article-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Toggle } from "@/components/ui/toggle";
 import { ALGORITHM_VERSION } from "@/lib/constants";
 
 function deriveSubscribedSources(items: ArticleData[]): Set<string> {
@@ -27,6 +29,9 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
     () => deriveSubscribedSources(initialItems)
   );
   const [hiddenSourceIds, setHiddenSourceIds] = useState(() => new Set<string>());
+  const [filterFollowing, setFilterFollowing] = useState(false);
+  const [filterBookmarked, setFilterBookmarked] = useState(false);
+  const [savedArticleIds, setSavedArticleIds] = useState(() => new Set<string>());
   const currentFeedRequestId = useRef(feedRequestId);
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -89,6 +94,17 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
   );
 
   async function handleInteraction(articleId: string, type: string) {
+    if (type === "save") {
+      setSavedArticleIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(articleId)) {
+          next.delete(articleId);
+        } else {
+          next.add(articleId);
+        }
+        return next;
+      });
+    }
     await fetch(`/api/articles/${articleId}/${type}`, { method: "POST" });
   }
 
@@ -136,23 +152,62 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
     }
   }
 
-  const visibleItems = items.filter(
-    (item) => !hiddenSourceIds.has(item.feedSource.id)
-  );
+  const filtersActive = filterFollowing || filterBookmarked;
 
-  if (visibleItems.length === 0) {
-    return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p className="text-lg font-medium">No articles yet</p>
-        <p className="mt-2">
-          Subscribe to some sources or wait for the next ingestion cycle.
-        </p>
-      </div>
-    );
-  }
+  const visibleItems = items.filter((item) => {
+    if (hiddenSourceIds.has(item.feedSource.id)) return false;
+    if (filterFollowing && !subscribedSourceIds.has(item.feedSource.id)) return false;
+    if (filterBookmarked && !savedArticleIds.has(item.id)) return false;
+    return true;
+  });
+
+  const emptyMessage = visibleItems.length === 0
+    ? filtersActive
+      ? filterBookmarked && !filterFollowing
+        ? "No bookmarked articles yet"
+        : filterFollowing && !filterBookmarked
+          ? "No articles from followed sources"
+          : "No articles match the active filters"
+      : null
+    : null;
 
   return (
     <div className="space-y-4">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-heading tracking-tight">Your Feed</h1>
+        <div className="flex items-center gap-1">
+          <Toggle
+            pressed={filterFollowing}
+            onPressedChange={setFilterFollowing}
+            size="sm"
+            aria-label="Show only following"
+          >
+            <Rss className="h-4 w-4" />
+          </Toggle>
+          <Toggle
+            pressed={filterBookmarked}
+            onPressedChange={setFilterBookmarked}
+            size="sm"
+            aria-label="Show only bookmarked"
+          >
+            <Bookmark className="h-4 w-4" />
+          </Toggle>
+        </div>
+      </div>
+
+      {emptyMessage ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <p className="text-lg font-medium">{emptyMessage}</p>
+        </div>
+      ) : visibleItems.length === 0 ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <p className="text-lg font-medium">No articles yet</p>
+          <p className="mt-2">
+            Subscribe to some sources or wait for the next ingestion cycle.
+          </p>
+        </div>
+      ) : null}
+
       {visibleItems.map((article) => (
         <ArticleCard
           key={article.id}

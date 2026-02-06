@@ -18,9 +18,6 @@ export default async function FeedPage() {
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-heading tracking-tight">Your Feed</h1>
-      </div>
       <FeedList
         initialItems={serialized}
         initialCursor={nextCursor}
