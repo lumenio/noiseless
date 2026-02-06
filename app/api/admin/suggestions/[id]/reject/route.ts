@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { isAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
@@ -12,8 +12,8 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id || !isAdmin(session.user.email)) {
+  const user = await getAuthUser();
+  if (!user || !isAdmin(user.email)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -26,7 +26,7 @@ export async function POST(
     where: { id },
     data: {
       status: "REJECTED",
-      reviewedByUserId: session.user.id,
+      reviewedByUserId: user.id,
       reviewedAt: new Date(),
       reviewNote,
     },

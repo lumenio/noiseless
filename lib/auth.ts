@@ -1,33 +1,26 @@
-import NextAuth from "next-auth";
-import Resend from "next-auth/providers/resend";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@/lib/db";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { prisma } from "./db";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
-  providers: [
-    Resend({
-      apiKey: process.env.AUTH_RESEND_KEY,
-      from: process.env.EMAIL_FROM || "Noiseless <noreply@noiseless.app>",
-    }),
-  ],
-  pages: {
-    signIn: "/login",
-    verifyRequest: "/login/verify",
-  },
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
+export async function getAuthUser() {
+  const { userId } = await auth();
+  if (!userId) return null;
+  return ensureUser(userId);
+}
+
+async function ensureUser(clerkId: string) {
+  const clerkUser = await currentUser();
+  if (!clerkUser) return null;
+
+  return prisma.user.upsert({
+    where: { id: clerkId },
+    update: { lastActiveAt: new Date() },
+    create: {
+      id: clerkId,
+      email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+      name: clerkUser.firstName
+        ? `${clerkUser.firstName} ${clerkUser.lastName ?? ""}`.trim()
+        : null,
+      image: clerkUser.imageUrl,
     },
-    session({ session, token }) {
-      if (token.id) {
-        session.user.id = token.id as string;
-      }
-      return session;
-    },
-  },
-});
+  });
+}

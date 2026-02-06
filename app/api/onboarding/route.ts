@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -8,8 +8,8 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -32,13 +32,13 @@ export async function POST(req: Request) {
       prisma.userTopicWeight.upsert({
         where: {
           userId_topicId: {
-            userId: session.user.id,
+            userId: user.id,
             topicId: topic.id,
           },
         },
         update: { weight: 1.0 },
         create: {
-          userId: session.user.id,
+          userId: user.id,
           topicId: topic.id,
           weight: 1.0,
         },
@@ -62,13 +62,13 @@ export async function POST(req: Request) {
       prisma.userSourceSubscription.upsert({
         where: {
           userId_feedSourceId: {
-            userId: session.user.id,
+            userId: user.id,
             feedSourceId: source.id,
           },
         },
         update: {},
         create: {
-          userId: session.user.id,
+          userId: user.id,
           feedSourceId: source.id,
         },
       })
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
 
   // Mark onboarding complete
   await prisma.user.update({
-    where: { id: session.user.id },
+    where: { id: user.id },
     data: { onboardingCompletedAt: new Date() },
   });
 

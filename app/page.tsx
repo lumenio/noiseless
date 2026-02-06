@@ -1,13 +1,13 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { publicFeed } from "@/lib/public-feed";
 import { PublicFeedList } from "@/components/feed/public-feed-list";
 
 export default async function HomePage() {
-  const session = await auth();
+  const user = await getAuthUser();
 
-  if (session?.user) {
+  if (user) {
     redirect("/feed");
   }
 

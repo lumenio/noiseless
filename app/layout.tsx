@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
-import { auth } from "@/lib/auth";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "@/components/layout/header";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/lib/contexts/providers";
@@ -22,36 +21,24 @@ export const metadata: Metadata = {
   description: "An algorithmic RSS feed reader that feels like a social feed",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>
-          <SessionProvider session={session}>
-            <Header
-              user={
-                session?.user
-                  ? {
-                      name: session.user.name,
-                      email: session.user.email,
-                      image: session.user.image,
-                    }
-                  : null
-              }
-            />
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <Providers>
+            <Header />
             <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
             <Toaster />
-          </SessionProvider>
-        </Providers>
-      </body>
-    </html>
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

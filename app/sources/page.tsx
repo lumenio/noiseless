@@ -1,10 +1,10 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SourceGrid } from "@/components/sources/source-grid";
 
 export default async function SourcesPage() {
-  const session = await auth();
-  const isLoggedIn = !!session?.user;
+  const user = await getAuthUser();
+  const isLoggedIn = !!user;
 
   const sources = await prisma.feedSource.findMany({
     where: { isPreinstalled: true },
@@ -18,9 +18,9 @@ export default async function SourcesPage() {
   const topics = await prisma.topic.findMany({ orderBy: { label: "asc" } });
 
   let subscribedIds = new Set<string>();
-  if (session?.user?.id) {
+  if (user) {
     const subs = await prisma.userSourceSubscription.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       select: { feedSourceId: true },
     });
     subscribedIds = new Set(subs.map((s) => s.feedSourceId));

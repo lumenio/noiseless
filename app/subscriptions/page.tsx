@@ -1,14 +1,14 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { SourceGrid } from "@/components/sources/source-grid";
 
 export default async function SubscriptionsPage() {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/login");
+  const user = await getAuthUser();
+  if (!user) redirect("/login");
 
   const subscriptions = await prisma.userSourceSubscription.findMany({
-    where: { userId: session.user.id },
+    where: { userId: user.id },
     include: {
       feedSource: {
         include: {

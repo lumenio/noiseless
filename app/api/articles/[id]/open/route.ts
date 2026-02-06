@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { recordInteraction } from "@/lib/interactions";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -11,8 +11,8 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -21,7 +21,7 @@ export async function POST(
   const parsed = schema.safeParse(body);
   const dwellSeconds = parsed.success ? parsed.data.dwellSeconds : undefined;
 
-  await recordInteraction(session.user.id, id, "OPEN", dwellSeconds);
+  await recordInteraction(user.id, id, "OPEN", dwellSeconds);
 
   return NextResponse.json({ ok: true });
 }

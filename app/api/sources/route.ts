@@ -1,10 +1,10 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -18,7 +18,7 @@ export async function GET() {
   });
 
   const subscriptions = await prisma.userSourceSubscription.findMany({
-    where: { userId: session.user.id },
+    where: { userId: user.id },
     select: { feedSourceId: true },
   });
 

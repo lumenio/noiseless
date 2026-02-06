@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { validateUrl } from "@/lib/ingest/validateUrl";
 import { NextResponse } from "next/server";
@@ -12,8 +12,8 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
+  const user = await getAuthUser();
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   today.setHours(0, 0, 0, 0);
   const count = await prisma.feedSuggestion.count({
     where: {
-      suggestedByUserId: session.user.id,
+      suggestedByUserId: user.id,
       createdAt: { gte: today },
     },
   });
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       url,
       title,
       note,
-      suggestedByUserId: session.user.id,
+      suggestedByUserId: user.id,
       parsedMeta: parsedMeta as Record<string, string | number> | undefined,
     },
   });
