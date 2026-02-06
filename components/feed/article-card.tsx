@@ -3,12 +3,17 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Heart, EyeOff, Bookmark, ExternalLink } from "lucide-react";
+import { Heart, EyeOff, Bookmark, ExternalLink, Plus, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "@/lib/time";
 
@@ -24,6 +29,8 @@ export interface ArticleData {
     id: string;
     title: string;
     siteUrl: string | null;
+    description: string | null;
+    subscribed: boolean;
   };
   topics: { slug: string; label: string }[];
   score: number;
@@ -42,18 +49,24 @@ export interface ArticleData {
 
 interface ArticleCardProps {
   article: ArticleData;
+  isSourceSubscribed?: boolean;
   onLike?: (id: string) => void;
   onHide?: (id: string) => void;
   onSave?: (id: string) => void;
   onImpression?: (id: string) => void;
+  onToggleSubscribe?: (sourceId: string, subscribe: boolean) => void;
+  onHideSource?: (sourceId: string) => void;
 }
 
 export function ArticleCard({
   article,
+  isSourceSubscribed,
   onLike,
   onHide,
   onSave,
   onImpression,
+  onToggleSubscribe,
+  onHideSource,
 }: ArticleCardProps) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -61,6 +74,8 @@ export function ArticleCard({
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
+
+  const subscribed = isSourceSubscribed ?? article.feedSource.subscribed;
 
   useEffect(() => {
     if (!onImpression) return;
@@ -89,7 +104,81 @@ export function ArticleCard({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{article.feedSource.title}</span>
+            <HoverCard openDelay={300} closeDelay={200}>
+              <HoverCardTrigger asChild>
+                <button
+                  type="button"
+                  className="hover:text-foreground hover:underline transition-colors"
+                >
+                  {article.feedSource.title}
+                </button>
+              </HoverCardTrigger>
+              <HoverCardContent align="start" className="w-72">
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm leading-tight">
+                        {article.feedSource.title}
+                      </p>
+                      {article.feedSource.siteUrl && (
+                        <a
+                          href={article.feedSource.siteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-muted-foreground hover:text-foreground hover:underline truncate block"
+                        >
+                          {article.feedSource.siteUrl.replace(/^https?:\/\//, "")}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  {article.feedSource.description && (
+                    <p className="text-xs text-muted-foreground line-clamp-3">
+                      {article.feedSource.description}
+                    </p>
+                  )}
+                  {article.topics.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {article.topics.map((t) => (
+                        <Badge key={t.slug} variant="secondary" className="text-[10px] px-1.5 py-0">
+                          {t.label}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                  {onToggleSubscribe && (
+                    <Button
+                      size="sm"
+                      variant={subscribed ? "secondary" : "default"}
+                      className="w-full"
+                      onClick={() =>
+                        onToggleSubscribe(article.feedSource.id, !subscribed)
+                      }
+                    >
+                      {subscribed ? (
+                        <>
+                          <Check className="mr-1.5 h-3 w-3" /> Following
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="mr-1.5 h-3 w-3" /> Follow
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  {onHideSource && (
+                    <button
+                      type="button"
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full justify-center"
+                      onClick={() => onHideSource(article.feedSource.id)}
+                    >
+                      <EyeOff className="h-3 w-3" />
+                      Hide this source
+                    </button>
+                  )}
+                </div>
+              </HoverCardContent>
+            </HoverCard>
             {!article.dateEstimated && (
               <>
                 <span className="text-xs">·</span>

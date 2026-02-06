@@ -23,6 +23,7 @@ model User {
   topicWeights          UserTopicWeight[]
   sourceSubscriptions   UserSourceSubscription[]
   sourceAffinities      UserSourceAffinity[]
+  hiddenSources         UserHiddenSource[]
   userEmbedding         UserEmbedding?
   impressions           ImpressionEvent[]
   interactions          InteractionEvent[]
@@ -62,6 +63,7 @@ model FeedSource {
   articles        Article[]
   subscriptions   UserSourceSubscription[]
   affinities      UserSourceAffinity[]
+  hiddenBy        UserHiddenSource[]
 }
 
 model FeedSourceTopic {
@@ -131,6 +133,17 @@ model UserSourceAffinity {
   feedSourceId String
   weight       Float    @default(0)
   updatedAt    DateTime @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feedSource FeedSource @relation(fields: [feedSourceId], references: [id], onDelete: Cascade)
+
+  @@id([userId, feedSourceId])
+}
+
+model UserHiddenSource {
+  userId       String
+  feedSourceId String
+  createdAt    DateTime @default(now())
 
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   feedSource FeedSource @relation(fields: [feedSourceId], references: [id], onDelete: Cascade)

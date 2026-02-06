@@ -21,6 +21,8 @@ interface RankedArticle {
     id: string;
     title: string;
     siteUrl: string | null;
+    description: string | null;
+    subscribed: boolean;
   };
   topics: { slug: string; label: string }[];
   score: number;
@@ -48,7 +50,7 @@ export async function rankFeed(
   cutoffDate.setDate(cutoffDate.getDate() - MAX_AGE_DAYS);
 
   // Fetch user state
-  const [topicWeights, subscriptions, affinities, recentImpressions, userEmbedding] =
+  const [topicWeights, subscriptions, affinities, recentImpressions, userEmbedding, hiddenSources] =
     await Promise.all([
       prisma.userTopicWeight.findMany({ where: { userId } }),
       prisma.userSourceSubscription.findMany({
@@ -64,9 +66,14 @@ export async function rankFeed(
         select: { articleId: true },
       }),
       prisma.userEmbedding.findUnique({ where: { userId } }),
+      prisma.userHiddenSource.findMany({
+        where: { userId },
+        select: { feedSourceId: true },
+      }),
     ]);
 
   const subscribedIds = new Set(subscriptions.map((s) => s.feedSourceId));
+  const hiddenSourceIds = new Set(hiddenSources.map((h) => h.feedSourceId));
   const topicWeightMap = new Map(topicWeights.map((tw) => [tw.topicId, tw.weight]));
   const affinityMap = new Map(affinities.map((a) => [a.feedSourceId, a.weight]));
   const recentlyShown = new Set(recentImpressions.map((i) => i.articleId));
@@ -118,6 +125,7 @@ export async function rankFeed(
     where: {
       publishedAt: { gte: cutoffDate },
       id: { notIn: Array.from(hiddenIds) },
+      feedSourceId: { notIn: Array.from(hiddenSourceIds) },
       OR: [
         { feedSourceId: { in: Array.from(subscribedIds) } },
         {
@@ -191,6 +199,8 @@ export async function rankFeed(
         id: article.feedSource.id,
         title: article.feedSource.title,
         siteUrl: article.feedSource.siteUrl,
+        description: article.feedSource.description,
+        subscribed: isSubscribed,
       },
       topics: article.feedSource.topics.map((t) => ({
         slug: t.topic.slug,

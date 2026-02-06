@@ -5,6 +5,14 @@ import { ArticleCard, ArticleData } from "./article-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ALGORITHM_VERSION } from "@/lib/constants";
 
+function deriveSubscribedSources(items: ArticleData[]): Set<string> {
+  const ids = new Set<string>();
+  for (const item of items) {
+    if (item.feedSource.subscribed) ids.add(item.feedSource.id);
+  }
+  return ids;
+}
+
 interface FeedListProps {
   initialItems: ArticleData[];
   initialCursor: string | null;
@@ -15,6 +23,10 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
   const [items, setItems] = useState(initialItems);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
+  const [subscribedSourceIds, setSubscribedSourceIds] = useState(
+    () => deriveSubscribedSources(initialItems)
+  );
+  const [hiddenSourceIds, setHiddenSourceIds] = useState(() => new Set<string>());
   const currentFeedRequestId = useRef(feedRequestId);
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -38,9 +50,18 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
     setLoading(true);
     const res = await fetch(`/api/feed?cursor=${cursor}`);
     const data = await res.json();
-    setItems((prev) => [...prev, ...data.items]);
+    const newItems = data.items as ArticleData[];
+    setItems((prev) => [...prev, ...newItems]);
     setCursor(data.nextCursor);
     currentFeedRequestId.current = data.feedRequestId;
+    // Merge any newly-subscribed sources from the new page
+    setSubscribedSourceIds((prev) => {
+      const next = new Set(prev);
+      for (const item of newItems) {
+        if (item.feedSource.subscribed) next.add(item.feedSource.id);
+      }
+      return next;
+    });
     setLoading(false);
   }
 
@@ -71,7 +92,55 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
     await fetch(`/api/articles/${articleId}/${type}`, { method: "POST" });
   }
 
-  if (items.length === 0) {
+  async function handleToggleSubscribe(sourceId: string, subscribe: boolean) {
+    // Optimistic update
+    setSubscribedSourceIds((prev) => {
+      const next = new Set(prev);
+      if (subscribe) {
+        next.add(sourceId);
+      } else {
+        next.delete(sourceId);
+      }
+      return next;
+    });
+
+    const endpoint = subscribe ? "subscribe" : "unsubscribe";
+    const res = await fetch(`/api/sources/${sourceId}/${endpoint}`, {
+      method: "POST",
+    });
+
+    if (!res.ok) {
+      // Revert on error
+      setSubscribedSourceIds((prev) => {
+        const next = new Set(prev);
+        if (subscribe) {
+          next.delete(sourceId);
+        } else {
+          next.add(sourceId);
+        }
+        return next;
+      });
+    }
+  }
+
+  async function handleHideSource(sourceId: string) {
+    setHiddenSourceIds((prev) => new Set(prev).add(sourceId));
+
+    const res = await fetch(`/api/sources/${sourceId}/hide`, { method: "POST" });
+    if (!res.ok) {
+      setHiddenSourceIds((prev) => {
+        const next = new Set(prev);
+        next.delete(sourceId);
+        return next;
+      });
+    }
+  }
+
+  const visibleItems = items.filter(
+    (item) => !hiddenSourceIds.has(item.feedSource.id)
+  );
+
+  if (visibleItems.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
         <p className="text-lg font-medium">No articles yet</p>
@@ -84,14 +153,17 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
 
   return (
     <div className="space-y-4">
-      {items.map((article) => (
+      {visibleItems.map((article) => (
         <ArticleCard
           key={article.id}
           article={article}
+          isSourceSubscribed={subscribedSourceIds.has(article.feedSource.id)}
           onLike={(id) => handleInteraction(id, "like")}
           onHide={(id) => handleInteraction(id, "hide")}
           onSave={(id) => handleInteraction(id, "save")}
           onImpression={logImpression}
+          onToggleSubscribe={handleToggleSubscribe}
+          onHideSource={handleHideSource}
         />
       ))}
       {cursor && (
