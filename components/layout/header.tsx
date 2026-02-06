@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Rss, Menu, LogOut, User, BookOpen, Globe, PlusCircle, Compass } from "lucide-react";
+import { Rss, Menu, LogOut, User, BookOpen, Globe, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { SettingsPopover } from "@/components/settings/settings-popover";
@@ -55,20 +55,6 @@ export function Header() {
                 {item.label}
               </Link>
             )
-          )}
-          {isLoggedIn && (
-            <Link
-              href="/sources/suggest"
-              className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent",
-                pathname === "/sources/suggest"
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              <PlusCircle className="h-4 w-4" />
-              Suggest
-            </Link>
           )}
         </nav>
 
@@ -118,17 +104,6 @@ export function Header() {
                     </Link>
                   </DropdownMenuItem>
                 )
-              )}
-              {isLoggedIn && (
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/sources/suggest"
-                    className="flex items-center gap-2"
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    Suggest Source
-                  </Link>
-                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

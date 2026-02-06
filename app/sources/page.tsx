@@ -1,6 +1,7 @@
 import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SourceGrid } from "@/components/sources/source-grid";
+import { SuggestDialog } from "@/components/sources/suggest-dialog";
 
 export default async function SourcesPage() {
   const user = await getAuthUser();
@@ -33,12 +34,15 @@ export default async function SourcesPage() {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-heading tracking-tight">Sources</h1>
-        <p className="mt-2 text-muted-foreground">
-          Browse our curated collection of RSS feeds. Subscribe to the ones you
-          find interesting.
-        </p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-heading tracking-tight">Sources</h1>
+          <p className="mt-2 text-muted-foreground">
+            Browse our curated collection of RSS feeds. Subscribe to the ones
+            you find interesting.
+          </p>
+        </div>
+        {isLoggedIn && <SuggestDialog topics={topics} />}
       </div>
       <SourceGrid
         initialSources={sourcesWithState}
