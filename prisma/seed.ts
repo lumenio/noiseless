@@ -18,6 +18,9 @@ const TOPICS = [
   { slug: "web", label: "Web" },
   { slug: "hardware", label: "Hardware" },
   { slug: "culture", label: "Culture" },
+  { slug: "data", label: "Data" },
+  { slug: "design", label: "Design" },
+  { slug: "neuroscience", label: "Neuroscience" },
 ];
 
 async function main() {
