@@ -1,11 +1,37 @@
 import Parser from "rss-parser";
 import he from "he";
+import TurndownService from "turndown";
 
 const parser = new Parser({
   timeout: 10000,
   maxRedirects: 3,
   headers: {
     "User-Agent": "Noiseless/1.0 RSS Reader",
+  },
+});
+
+const turndownService = new TurndownService({
+  headingStyle: "atx",
+  codeBlockStyle: "fenced",
+  bulletListMarker: "-",
+});
+
+// Custom rule to extract language from <pre><code class="language-xxx">
+turndownService.addRule("fencedCodeBlock", {
+  filter(node) {
+    return (
+      node.nodeName === "PRE" &&
+      node.firstChild !== null &&
+      node.firstChild.nodeName === "CODE"
+    );
+  },
+  replacement(_content, node) {
+    const codeEl = node.firstChild as HTMLElement;
+    const className = codeEl.getAttribute?.("class") || "";
+    const langMatch = className.match(/language-(\w+)/);
+    const lang = langMatch ? langMatch[1] : "";
+    const code = codeEl.textContent || "";
+    return `\n\n\`\`\`${lang}\n${code.replace(/\n$/, "")}\n\`\`\`\n\n`;
   },
 });
 
@@ -32,6 +58,14 @@ function stripHtmlPreserveBreaks(html: string): string {
       .replace(/\n{3,}/g, "\n\n")
       .trim()
   );
+}
+
+function htmlToMarkdown(html: string): string {
+  try {
+    return turndownService.turndown(html).trim();
+  } catch {
+    return stripHtmlPreserveBreaks(html);
+  }
 }
 
 export async function parseFeed(
@@ -78,7 +112,7 @@ export async function parseFeed(
         publishedAt: item.isoDate ? new Date(item.isoDate) : item.pubDate ? new Date(item.pubDate) : new Date(),
         dateEstimated: !item.isoDate && !item.pubDate,
         summary: he.decode(rawContent.replace(/<[^>]*>/g, "").trim()) || null,
-        content: stripHtmlPreserveBreaks(rawContent) || null,
+        content: htmlToMarkdown(rawContent) || null,
       };
     });
 

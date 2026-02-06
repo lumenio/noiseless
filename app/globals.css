@@ -123,3 +123,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+.article-content pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+.article-content pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.article-content pre::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+}
