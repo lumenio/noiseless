@@ -11,7 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "@/lib/time";
 import { MarkdownContent } from "./markdown-content";
 
@@ -45,7 +45,14 @@ export interface ArticleData {
 const CLAMP_HEIGHT = 200;
 
 function hasMarkdownFormatting(text: string): boolean {
-  return /```|^\s*#{1,6}\s|\[.+\]\(.+\)|^\s*[-*]\s+\S|^\s*>\s|`[^`]+`/m.test(text);
+  // Only match patterns that turndown produces (not plain text artifacts):
+  // - fenced code blocks (```)
+  // - markdown links [text](https://...)
+  // - bold (**text**)
+  // - headings (# ...)
+  // - images (![alt](url))
+  // Deliberately excluded (too common in plain text): - lists, > quotes, `inline`
+  return /```|\[.+?\]\(https?:\/\/[^\s)]+\)|\*\*\S|^\s*#{1,6}\s|!\[/m.test(text);
 }
 
 interface ArticleCardProps {
@@ -76,13 +83,6 @@ export function ArticleCard({
   const contentRef = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
 
-  const measureOverflow = useCallback(() => {
-    const el = contentRef.current;
-    if (el && !expanded) {
-      setOverflows(el.scrollHeight > CLAMP_HEIGHT);
-    }
-  }, [expanded]);
-
   useEffect(() => {
     if (!onImpression) return;
     const el = ref.current;
@@ -100,9 +100,16 @@ export function ArticleCard({
     return () => observer.disconnect();
   }, [article.id, onImpression]);
 
+  // Use ResizeObserver to reliably detect overflow after markdown renders
   useEffect(() => {
-    measureOverflow();
-  }, [measureOverflow]);
+    const el = contentRef.current;
+    if (!el || expanded) return;
+    const ro = new ResizeObserver(() => {
+      setOverflows(el.scrollHeight > CLAMP_HEIGHT);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [expanded]);
 
   if (hidden) return null;
 
@@ -173,7 +180,6 @@ export function ArticleCard({
                   style={
                     !expanded ? { maxHeight: CLAMP_HEIGHT } : undefined
                   }
-                  onLoad={measureOverflow}
                 >
                   <MarkdownContent content={article.content} />
                   {!expanded && overflows && (
