@@ -98,12 +98,12 @@ export function ArticleCard({
     <article ref={ref} className="border-b border-border pb-6">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0">
             <HoverCard openDelay={300} closeDelay={200}>
               <HoverCardTrigger asChild>
                 <button
                   type="button"
-                  className="hover:text-foreground hover:underline transition-colors"
+                  className="hover:text-foreground hover:underline transition-colors shrink-0"
                 >
                   {article.feedSource.title}
                 </button>
@@ -166,14 +166,14 @@ export function ArticleCard({
             </HoverCard>
             {!article.dateEstimated && (
               <>
-                <span className="text-xs">·</span>
-                <span>{formatDistanceToNow(new Date(article.publishedAt))}</span>
+                <span className="text-xs shrink-0">·</span>
+                <span className="shrink-0">{formatDistanceToNow(new Date(article.publishedAt))}</span>
               </>
             )}
             {article.author && (
               <>
-                <span className="text-xs">·</span>
-                <span>{article.author}</span>
+                <span className="text-xs shrink-0">·</span>
+                <span className="truncate">{article.author}</span>
               </>
             )}
           </div>
