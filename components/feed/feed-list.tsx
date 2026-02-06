@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Rss, Bookmark } from "lucide-react";
+import { Users, Bookmark } from "lucide-react";
 import { ArticleCard, ArticleData } from "./article-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Toggle } from "@/components/ui/toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ALGORITHM_VERSION } from "@/lib/constants";
 
 function deriveSubscribedSources(items: ArticleData[]): Set<string> {
@@ -19,9 +25,10 @@ interface FeedListProps {
   initialItems: ArticleData[];
   initialCursor: string | null;
   feedRequestId: string;
+  initialSavedArticleIds: string[];
 }
 
-export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedListProps) {
+export function FeedList({ initialItems, initialCursor, feedRequestId, initialSavedArticleIds }: FeedListProps) {
   const [items, setItems] = useState(initialItems);
   const [cursor, setCursor] = useState(initialCursor);
   const [loading, setLoading] = useState(false);
@@ -31,7 +38,7 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
   const [hiddenSourceIds, setHiddenSourceIds] = useState(() => new Set<string>());
   const [filterFollowing, setFilterFollowing] = useState(false);
   const [filterBookmarked, setFilterBookmarked] = useState(false);
-  const [savedArticleIds, setSavedArticleIds] = useState(() => new Set<string>());
+  const [savedArticleIds, setSavedArticleIds] = useState(() => new Set(initialSavedArticleIds));
   const currentFeedRequestId = useRef(feedRequestId);
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -175,24 +182,36 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
     <div className="space-y-4">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-heading tracking-tight">Your Feed</h1>
-        <div className="flex items-center gap-1">
-          <Toggle
-            pressed={filterFollowing}
-            onPressedChange={setFilterFollowing}
-            size="sm"
-            aria-label="Show only following"
-          >
-            <Rss className="h-4 w-4" />
-          </Toggle>
-          <Toggle
-            pressed={filterBookmarked}
-            onPressedChange={setFilterBookmarked}
-            size="sm"
-            aria-label="Show only bookmarked"
-          >
-            <Bookmark className="h-4 w-4" />
-          </Toggle>
-        </div>
+        <TooltipProvider delayDuration={300}>
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Toggle
+                  pressed={filterFollowing}
+                  onPressedChange={setFilterFollowing}
+                  size="sm"
+                  aria-label="Show only following"
+                >
+                  <Users className="h-4 w-4" />
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>Following</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Toggle
+                  pressed={filterBookmarked}
+                  onPressedChange={setFilterBookmarked}
+                  size="sm"
+                  aria-label="Show only bookmarked"
+                >
+                  <Bookmark className="h-4 w-4" />
+                </Toggle>
+              </TooltipTrigger>
+              <TooltipContent>Bookmarked</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       {emptyMessage ? (

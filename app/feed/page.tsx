@@ -1,6 +1,7 @@
 import { getAuthUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { rankFeed } from "@/lib/rank";
+import { prisma } from "@/lib/db";
 import { FeedList } from "@/components/feed/feed-list";
 
 export default async function FeedPage() {
@@ -8,7 +9,15 @@ export default async function FeedPage() {
   if (!user) redirect("/login");
   if (!user.onboardingCompletedAt) redirect("/onboarding");
 
-  const { items, nextCursor, feedRequestId } = await rankFeed(user.id);
+  const [{ items, nextCursor, feedRequestId }, savedInteractions] =
+    await Promise.all([
+      rankFeed(user.id),
+      prisma.interactionEvent.findMany({
+        where: { userId: user.id, type: "SAVE" },
+        select: { articleId: true },
+      }),
+    ]);
+  const savedArticleIds = savedInteractions.map((i) => i.articleId);
 
   // Serialize dates for client component
   const serialized = items.map((item) => ({
@@ -22,6 +31,7 @@ export default async function FeedPage() {
         initialItems={serialized}
         initialCursor={nextCursor}
         feedRequestId={feedRequestId}
+        initialSavedArticleIds={savedArticleIds}
       />
     </div>
   );
