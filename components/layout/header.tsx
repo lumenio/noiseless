@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Rss, Menu, LogOut, User, BookOpen, Globe, Compass } from "lucide-react";
+import { Menu, LogOut, User, BookOpen, Globe, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/settings/theme-toggle";
 import { SettingsPopover } from "@/components/settings/settings-popover";
@@ -20,7 +20,6 @@ const NAV_ITEMS = [
   { href: "/", label: "Explore", icon: Compass, authRequired: false, hideWhenAuthed: true },
   { href: "/feed", label: "Feed", icon: BookOpen, authRequired: true, hideWhenAuthed: false },
   { href: "/sources", label: "Sources", icon: Globe, authRequired: false, hideWhenAuthed: false },
-  { href: "/subscriptions", label: "Subscriptions", icon: Rss, authRequired: true, hideWhenAuthed: false },
 ];
 
 export function Header() {

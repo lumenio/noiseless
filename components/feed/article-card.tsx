@@ -13,7 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Heart, EyeOff, Bookmark, ExternalLink, Plus, Check } from "lucide-react";
+import { Heart, EyeOff, Bookmark, Plus, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "@/lib/time";
 
@@ -188,14 +188,6 @@ export function ArticleCard({
             {article.title}
           </a>
         </div>
-        <a
-          href={article.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 shrink-0 text-muted-foreground hover:text-foreground"
-        >
-          <ExternalLink className="h-4 w-4" />
-        </a>
       </div>
       <div className="mt-3 space-y-2">
         {article.summary && (
