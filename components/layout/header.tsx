@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Rss, Menu, LogOut, User, BookOpen, Globe, PlusCircle, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/settings/theme-toggle";
+import { SettingsPopover } from "@/components/settings/settings-popover";
 
 interface HeaderProps {
   user: {
@@ -35,7 +37,7 @@ export function Header({ user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 max-w-6xl items-center px-4">
-        <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-bold">
+        <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-heading">
           <Image src="/logo.svg" alt="" width={20} height={20} className="dark:invert" />
           Noiseless
         </Link>
@@ -75,6 +77,8 @@ export function Header({ user }: HeaderProps) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+          <SettingsPopover />
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

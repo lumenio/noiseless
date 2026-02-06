@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "@/lib/contexts/providers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,25 +30,27 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProvider session={session}>
-          <Header
-            user={
-              session?.user
-                ? {
-                    name: session.user.name,
-                    email: session.user.email,
-                    image: session.user.image,
-                  }
-                : null
-            }
-          />
-          <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
-          <Toaster />
-        </SessionProvider>
+        <Providers>
+          <SessionProvider session={session}>
+            <Header
+              user={
+                session?.user
+                  ? {
+                      name: session.user.name,
+                      email: session.user.email,
+                      image: session.user.image,
+                    }
+                  : null
+              }
+            />
+            <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
+            <Toaster />
+          </SessionProvider>
+        </Providers>
       </body>
     </html>
   );

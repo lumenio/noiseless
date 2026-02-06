@@ -68,7 +68,7 @@ export default function AdminSuggestionsPage() {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-bold tracking-tight mb-6">
+      <h1 className="text-2xl font-heading tracking-tight mb-6">
         Suggestion Review
       </h1>
       <Tabs value={tab} onValueChange={setTab}>

@@ -48,6 +48,10 @@
 
 :root {
   --radius: 0.625rem;
+  --heading-font-weight: 700;
+  --heading-font-stretch: 100%;
+  --body-font-weight: 400;
+  --body-font-stretch: 100%;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -121,5 +125,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-weight: var(--body-font-weight);
+    font-stretch: var(--body-font-stretch);
   }
+}
+
+@utility font-heading {
+  font-weight: var(--heading-font-weight);
+  font-stretch: var(--heading-font-stretch);
 }
