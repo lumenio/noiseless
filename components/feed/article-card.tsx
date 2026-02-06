@@ -55,6 +55,7 @@ interface ArticleCardProps {
   onImpression?: (id: string) => void;
   onToggleSubscribe?: (sourceId: string, subscribe: boolean) => void;
   onHideSource?: (sourceId: string) => void;
+  isSaved?: boolean;
 }
 
 export function ArticleCard({
@@ -65,9 +66,10 @@ export function ArticleCard({
   onImpression,
   onToggleSubscribe,
   onHideSource,
+  isSaved,
 }: ArticleCardProps) {
   const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(isSaved ?? false);
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);

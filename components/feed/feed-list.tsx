@@ -192,7 +192,7 @@ export function FeedList({ initialItems, initialCursor, feedRequestId, initialSa
                   size="sm"
                   aria-label="Show only following"
                 >
-                  <Users className="h-4 w-4" />
+                  <Users className={`h-4 w-4 ${filterFollowing ? "fill-current" : ""}`} />
                 </Toggle>
               </TooltipTrigger>
               <TooltipContent>Following</TooltipContent>
@@ -205,7 +205,7 @@ export function FeedList({ initialItems, initialCursor, feedRequestId, initialSa
                   size="sm"
                   aria-label="Show only bookmarked"
                 >
-                  <Bookmark className="h-4 w-4" />
+                  <Bookmark className={`h-4 w-4 ${filterBookmarked ? "fill-current" : ""}`} />
                 </Toggle>
               </TooltipTrigger>
               <TooltipContent>Bookmarked</TooltipContent>
@@ -233,6 +233,7 @@ export function FeedList({ initialItems, initialCursor, feedRequestId, initialSa
           article={article}
           isSourceSubscribed={subscribedSourceIds.has(article.feedSource.id)}
           onLike={(id) => handleInteraction(id, "like")}
+          isSaved={savedArticleIds.has(article.id)}
           onSave={(id) => handleInteraction(id, "save")}
           onImpression={logImpression}
           onToggleSubscribe={handleToggleSubscribe}
