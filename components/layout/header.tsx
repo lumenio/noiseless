@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,7 @@ export function Header({ user }: HeaderProps) {
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 max-w-6xl items-center px-4">
         <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-bold">
-          <Rss className="h-5 w-5 text-primary" />
+          <Image src="/logo.svg" alt="" width={20} height={20} className="dark:invert" />
           Noiseless
         </Link>
 
