@@ -1,13 +1,10 @@
 import { prisma } from "@/lib/db";
 import { InteractionType } from "@/lib/generated/prisma/client";
+import { getInteractionWeight, updateUserEmbedding } from "@/lib/embeddings";
 
 const TOPIC_WEIGHT_DELTA = 0.2;
 const WEIGHT_MIN = -3;
 const WEIGHT_MAX = 3;
-
-function clamp(value: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, value));
-}
 
 export async function recordInteraction(
   userId: string,
@@ -30,8 +27,16 @@ export async function recordInteraction(
     });
   }
 
-  // Update topic weights for relevant interaction types
-  if (["LIKE", "DISLIKE", "HIDE", "SAVE"].includes(type)) {
+  // Fire-and-forget: update user embedding based on article embedding
+  const embWeight = getInteractionWeight(type, value ?? undefined);
+  if (embWeight !== 0) {
+    updateUserEmbeddingForArticle(userId, articleId, embWeight).catch((err) =>
+      console.error("Failed to update user embedding:", err)
+    );
+  }
+
+  // Update topic weights for relevant interaction types (including OPEN for dwell-based learning)
+  if (["LIKE", "DISLIKE", "HIDE", "SAVE", "OPEN"].includes(type)) {
     const article = await prisma.article.findUnique({
       where: { id: articleId },
       include: {
@@ -42,74 +47,73 @@ export async function recordInteraction(
     });
 
     if (article) {
-      const delta =
-        type === "LIKE" || type === "SAVE"
-          ? TOPIC_WEIGHT_DELTA
-          : -TOPIC_WEIGHT_DELTA;
+      // For OPEN events, only update topic weights if meaningful dwell time
+      const isOpen = type === "OPEN";
+      const dwellSeconds = value ?? 0;
+      if (isOpen && dwellSeconds < 10) {
+        // Short dwell — skip topic weight update but still update source affinity below
+      } else {
+        const delta =
+          type === "LIKE" || type === "SAVE" || (isOpen && dwellSeconds >= 10)
+            ? TOPIC_WEIGHT_DELTA
+            : -TOPIC_WEIGHT_DELTA;
 
-      await Promise.all(
-        article.feedSource.topics.map((fst) =>
-          prisma.userTopicWeight.upsert({
-            where: {
-              userId_topicId: { userId, topicId: fst.topicId },
-            },
-            update: {
-              weight: {
-                set: undefined, // will be overridden below
-              },
-            },
-            create: {
+        // Atomic upsert with clamped weight via raw SQL
+        await Promise.all(
+          article.feedSource.topics.map((fst) =>
+            prisma.$executeRawUnsafe(
+              `INSERT INTO "UserTopicWeight" ("userId", "topicId", "weight", "updatedAt")
+               VALUES ($1, $2, $3, NOW())
+               ON CONFLICT ("userId", "topicId")
+               DO UPDATE SET
+                 "weight" = GREATEST(${WEIGHT_MIN}, LEAST(${WEIGHT_MAX}, "UserTopicWeight"."weight" + $3)),
+                 "updatedAt" = NOW()`,
               userId,
-              topicId: fst.topicId,
-              weight: clamp(delta, WEIGHT_MIN, WEIGHT_MAX),
-            },
-          }).then(async (existing) => {
-            // Update with clamped value
-            await prisma.userTopicWeight.update({
-              where: {
-                userId_topicId: { userId, topicId: fst.topicId },
-              },
-              data: {
-                weight: clamp(existing.weight + delta, WEIGHT_MIN, WEIGHT_MAX),
-              },
-            });
-          })
-        )
-      );
+              fst.topicId,
+              delta
+            )
+          )
+        );
+      }
 
       // Update source affinity
       const affinityDelta =
-        type === "LIKE" || type === "SAVE" ? 0.3 : -0.3;
+        type === "LIKE" || type === "SAVE" || (isOpen && dwellSeconds >= 60)
+          ? 0.3
+          : type === "DISLIKE" || type === "HIDE"
+            ? -0.3
+            : 0;
 
-      const existing = await prisma.userSourceAffinity.findUnique({
-        where: {
-          userId_feedSourceId: {
-            userId,
-            feedSourceId: article.feedSourceId,
-          },
-        },
-      });
-
-      await prisma.userSourceAffinity.upsert({
-        where: {
-          userId_feedSourceId: {
-            userId,
-            feedSourceId: article.feedSourceId,
-          },
-        },
-        update: {
-          weight: clamp(
-            (existing?.weight || 0) + affinityDelta,
-            WEIGHT_MIN,
-            WEIGHT_MAX
-          ),
-        },
-        create: {
+      if (affinityDelta !== 0) {
+        await prisma.$executeRawUnsafe(
+          `INSERT INTO "UserSourceAffinity" ("userId", "feedSourceId", "weight", "updatedAt")
+           VALUES ($1, $2, $3, NOW())
+           ON CONFLICT ("userId", "feedSourceId")
+           DO UPDATE SET
+             "weight" = GREATEST(${WEIGHT_MIN}, LEAST(${WEIGHT_MAX}, "UserSourceAffinity"."weight" + $3)),
+             "updatedAt" = NOW()`,
           userId,
-          feedSourceId: article.feedSourceId,
-          weight: clamp(affinityDelta, WEIGHT_MIN, WEIGHT_MAX),
-        },
-      });
+          article.feedSourceId,
+          affinityDelta
+        );
+      }
     }
   }
+}
+
+async function updateUserEmbeddingForArticle(
+  userId: string,
+  articleId: string,
+  weight: number
+) {
+  // Fetch article embedding via raw SQL (pgvector stores as vector type)
+  const rows: { embedding: string }[] = await prisma.$queryRawUnsafe(
+    `SELECT "embedding"::text FROM "ArticleEmbedding" WHERE "articleId" = $1 AND "embedding" IS NOT NULL`,
+    articleId
+  );
+
+  if (rows.length === 0) return;
+
+  const articleEmbedding = JSON.parse(rows[0].embedding) as number[];
+  await updateUserEmbedding(userId, articleEmbedding, weight);
 }

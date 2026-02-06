@@ -8,6 +8,8 @@ const MAX_AGE_DAYS = 30;
 const SOURCE_CAP_TOP_20 = 2;
 const EXPLORE_RATE = 0.15;
 const MMR_LAMBDA = 0.8;
+const TRENDING_LIMIT = 50;
+const EXPLORE_POOL_SIZE = 20;
 
 interface RankedArticle {
   id: string;
@@ -120,7 +122,29 @@ export async function rankFeed(
     }
   }
 
-  // Topic + subscription candidates
+  // Trending candidates — articles with highest engagement in last 7 days
+  const trendingCutoff = new Date();
+  trendingCutoff.setDate(trendingCutoff.getDate() - 7);
+  let trendingIds = new Set<string>();
+
+  try {
+    const trendingRows: { articleId: string }[] = await prisma.$queryRawUnsafe(
+      `SELECT s."articleId"
+       FROM "ArticleStats" s
+       JOIN "Article" a ON s."articleId" = a."id"
+       WHERE a."publishedAt" > $1
+         AND (s."likes" > 0 OR s."opens" > 0)
+       ORDER BY (s."likes" * 3 + s."saves" * 5 + s."opens") DESC
+       LIMIT $2`,
+      trendingCutoff,
+      TRENDING_LIMIT
+    );
+    trendingIds = new Set(trendingRows.map((r) => r.articleId));
+  } catch {
+    // ArticleStats may not be populated yet
+  }
+
+  // Topic + subscription + vector + trending candidates
   const candidateArticles = await prisma.article.findMany({
     where: {
       publishedAt: { gte: cutoffDate },
@@ -134,6 +158,7 @@ export async function rankFeed(
           },
         },
         { id: { in: Array.from(vectorCandidateIds) } },
+        { id: { in: Array.from(trendingIds) } },
       ],
     },
     include: {
@@ -185,7 +210,7 @@ export async function rankFeed(
     if (isSubscribed) candidateSources.push("SUBSCRIBED");
     if (topicRelevance > 0) candidateSources.push("TOPIC");
     if (vectorSimilarity > 0.3) candidateSources.push("VECTOR");
-    if (qualityScore > 0.5) candidateSources.push("TRENDING");
+    if (trendingIds.has(article.id)) candidateSources.push("TRENDING");
 
     return {
       id: article.id,
@@ -225,11 +250,31 @@ export async function rankFeed(
   // Sort by score
   scored.sort((a, b) => b.score - a.score);
 
+  // Fetch real embeddings for top candidates to use in MMR diversity
+  const topCandidateIds = scored.slice(0, 200).map((a) => a.id);
+  const embeddingMap = await fetchArticleEmbeddings(topCandidateIds);
+  for (const article of scored) {
+    const emb = embeddingMap.get(article.id);
+    if (emb) article._embedding = emb;
+  }
+
   // Re-rank with constraints + MMR diversity
   const reranked = rerankWithConstraints(scored);
 
-  // Inject exploration items
-  const withExplore = injectExploration(reranked, EXPLORE_RATE);
+  // Inject exploration items from DB
+  const candidateIdSet = new Set(scored.map((a) => a.id));
+  const candidateSourceIdSet = new Set(scored.map((a) => a.feedSource.id));
+  const withExplore = await injectExploration(
+    reranked,
+    EXPLORE_RATE,
+    userId,
+    candidateIdSet,
+    candidateSourceIdSet,
+    hiddenIds,
+    hiddenSourceIds,
+    cutoffDate,
+    subscribedIds
+  );
 
   // Apply cursor pagination
   let startIndex = 0;
@@ -245,6 +290,32 @@ export async function rankFeed(
     items.length === PAGE_SIZE ? items[items.length - 1].id : null;
 
   return { items, nextCursor, feedRequestId };
+}
+
+async function fetchArticleEmbeddings(
+  articleIds: string[]
+): Promise<Map<string, number[]>> {
+  const map = new Map<string, number[]>();
+  if (articleIds.length === 0) return map;
+
+  try {
+    const rows: { articleId: string; embedding: string }[] =
+      await prisma.$queryRawUnsafe(
+        `SELECT "articleId", "embedding"::text
+         FROM "ArticleEmbedding"
+         WHERE "articleId" = ANY($1)
+           AND "embedding" IS NOT NULL`,
+        articleIds
+      );
+
+    for (const row of rows) {
+      map.set(row.articleId, JSON.parse(row.embedding) as number[]);
+    }
+  } catch {
+    // Embeddings not available
+  }
+
+  return map;
 }
 
 function rerankWithConstraints(articles: RankedArticle[]): RankedArticle[] {
@@ -263,12 +334,19 @@ function rerankWithConstraints(articles: RankedArticle[]): RankedArticle[] {
       // Hard constraint: source cap in top 20
       if (result.length < 20 && count >= SOURCE_CAP_TOP_20) continue;
 
-      // MMR diversity penalty (using score breakdown as proxy when no embeddings)
+      // MMR diversity penalty using real embeddings when available, topic overlap as fallback
       let diversityPenalty = 0;
       if (result.length > 0) {
-        // Penalize articles from same source or very similar topic mix
         diversityPenalty = result.reduce((max, s) => {
+          // Same source: high penalty
           if (s.feedSource.id === a.feedSource.id) return Math.max(max, 0.8);
+
+          // Use real embedding cosine similarity when both have embeddings
+          if (a._embedding && s._embedding) {
+            return Math.max(max, cosine(a._embedding, s._embedding));
+          }
+
+          // Fallback: topic overlap proxy
           const sharedTopics = a.topics.filter((t) =>
             s.topics.some((st) => st.slug === t.slug)
           ).length;
@@ -300,19 +378,107 @@ function rerankWithConstraints(articles: RankedArticle[]): RankedArticle[] {
   return result;
 }
 
-function injectExploration(
+async function injectExploration(
   articles: RankedArticle[],
-  rate: number
-): RankedArticle[] {
-  // Mark every Nth item as an explore slot
+  rate: number,
+  userId: string,
+  existingIds: Set<string>,
+  existingSourceIds: Set<string>,
+  hiddenIds: Set<string>,
+  hiddenSourceIds: Set<string>,
+  cutoffDate: Date,
+  subscribedIds: Set<string>
+): Promise<RankedArticle[]> {
   const interval = Math.round(1 / rate);
-  return articles.map((article, i) => {
-    if ((i + 1) % interval === 0 && !article.candidateSources.includes("EXPLORE")) {
+
+  // Fetch novel exploration candidates from DB
+  let explorePool: RankedArticle[] = [];
+  try {
+    const excludeArticleIds = Array.from(existingIds);
+    const excludeSourceIds = Array.from(
+      new Set([...existingSourceIds, ...hiddenSourceIds])
+    );
+    const hiddenArticleIds = Array.from(hiddenIds);
+
+    // Find recent articles from sources the user hasn't seen in this feed,
+    // preferring preinstalled (quality floor)
+    const exploreRows = await prisma.article.findMany({
+      where: {
+        publishedAt: { gte: cutoffDate },
+        id: { notIn: [...excludeArticleIds, ...hiddenArticleIds] },
+        feedSourceId: { notIn: excludeSourceIds },
+        feedSource: { isPreinstalled: true },
+      },
+      include: {
+        feedSource: {
+          include: {
+            topics: { include: { topic: true } },
+          },
+        },
+        stats: true,
+      },
+      orderBy: { publishedAt: "desc" },
+      take: EXPLORE_POOL_SIZE * 3, // fetch extra so we can randomize
+    });
+
+    // Shuffle and take EXPLORE_POOL_SIZE
+    const shuffled = exploreRows.sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, EXPLORE_POOL_SIZE);
+
+    explorePool = selected.map((article) => {
+      const isSubscribed = subscribedIds.has(article.feedSourceId);
       return {
-        ...article,
-        candidateSources: [...article.candidateSources, "EXPLORE"],
+        id: article.id,
+        title: article.title,
+        url: article.url,
+        summary: article.summary,
+        publishedAt: article.publishedAt,
+        dateEstimated: article.dateEstimated,
+        author: article.author,
+        feedSource: {
+          id: article.feedSource.id,
+          title: article.feedSource.title,
+          siteUrl: article.feedSource.siteUrl,
+          description: article.feedSource.description,
+          subscribed: isSubscribed,
+        },
+        topics: article.feedSource.topics.map((t) => ({
+          slug: t.topic.slug,
+          label: t.topic.label,
+        })),
+        score: 0.5, // minimum score floor — visible but not dominant
+        likes: article.stats?.likes ?? 0,
+        saves: article.stats?.saves ?? 0,
+        candidateSources: ["EXPLORE"],
+        scoreBreakdown: {
+          topicRelevance: 0,
+          freshness: 0.3,
+          subscribed: 0,
+          sourceAffinity: 0,
+          qualityScore: 0,
+          seenPenalty: 0,
+          vectorSimilarity: 0,
+        },
       };
+    });
+  } catch {
+    // If explore query fails, continue without exploration
+  }
+
+  // Insert exploration items at every Nth position
+  if (explorePool.length === 0) return articles;
+
+  const result: RankedArticle[] = [];
+  let exploreIdx = 0;
+
+  for (let i = 0; i < articles.length; i++) {
+    result.push(articles[i]);
+    // After every interval items, inject an exploration item
+    if ((i + 1) % interval === 0 && exploreIdx < explorePool.length) {
+      result.push(explorePool[exploreIdx]);
+      exploreIdx++;
     }
-    return article;
-  });
+  }
+
+  return result;
 }

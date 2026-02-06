@@ -1,5 +1,6 @@
 import { getAuthUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { initializeUserEmbedding } from "@/lib/embeddings";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -51,6 +52,11 @@ export async function POST(req: Request) {
     where: { id: user.id },
     data: { onboardingCompletedAt: new Date() },
   });
+
+  // Initialize user taste vector from selected topics' recent articles (fire-and-forget)
+  initializeUserEmbedding(user.id).catch((err) =>
+    console.error("Failed to initialize user embedding:", err)
+  );
 
   return NextResponse.json({ ok: true });
 }
