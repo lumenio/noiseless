@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { Roboto_Flex, IBM_Plex_Sans_Condensed, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { Header } from "@/components/layout/header";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const robotoFlex = Roboto_Flex({
-  variable: "--font-heading",
-  subsets: ["latin"],
-});
-
-const ibmPlexSansCondensed = IBM_Plex_Sans_Condensed({
-  weight: ["400", "500", "600"],
-  variable: "--font-sans",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -37,7 +31,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotoFlex.variable} ${ibmPlexSansCondensed.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider session={session}>
           <Header

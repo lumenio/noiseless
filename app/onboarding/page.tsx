@@ -7,7 +7,7 @@ export default async function OnboardingPage() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-12">
       <div className="mb-8 text-center">
-        <h1 className="font-heading text-3xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight">
           What are you interested in?
         </h1>
         <p className="mt-2 text-muted-foreground">
