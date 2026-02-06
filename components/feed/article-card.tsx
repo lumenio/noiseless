@@ -13,14 +13,12 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "@/lib/time";
-import { MarkdownContent } from "./markdown-content";
 
 export interface ArticleData {
   id: string;
   title: string;
   url: string;
   summary: string | null;
-  content: string | null;
   publishedAt: string;
   dateEstimated?: boolean;
   author: string | null;
@@ -40,19 +38,6 @@ export interface ArticleData {
     qualityScore: number;
     seenPenalty: number;
   };
-}
-
-const CLAMP_HEIGHT = 200;
-
-function hasMarkdownFormatting(text: string): boolean {
-  // Only match patterns that turndown produces (not plain text artifacts):
-  // - fenced code blocks (```)
-  // - markdown links [text](https://...)
-  // - bold (**text**)
-  // - headings (# ...)
-  // - images (![alt](url))
-  // Deliberately excluded (too common in plain text): - lists, > quotes, `inline`
-  return /```|\[.+?\]\(https?:\/\/[^\s)]+\)|\*\*\S|^\s*#{1,6}\s|!\[/m.test(text);
 }
 
 interface ArticleCardProps {
@@ -78,9 +63,7 @@ export function ArticleCard({
   const [hidden, setHidden] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [overflows, setOverflows] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
 
   useEffect(() => {
@@ -99,17 +82,6 @@ export function ArticleCard({
     observer.observe(el);
     return () => observer.disconnect();
   }, [article.id, onImpression]);
-
-  // Use ResizeObserver to reliably detect overflow after markdown renders
-  useEffect(() => {
-    const el = contentRef.current;
-    if (!el || expanded) return;
-    const ro = new ResizeObserver(() => {
-      setOverflows(el.scrollHeight > CLAMP_HEIGHT);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [expanded]);
 
   if (hidden) return null;
 
@@ -168,60 +140,31 @@ export function ArticleCard({
         </a>
       </div>
       <div className="mt-3 space-y-2">
-        {(article.content || article.summary) && (
+        {article.summary && (
           <div className="text-sm text-foreground/80">
-            {article.content && hasMarkdownFormatting(article.content) ? (
+            {article.summary.length > 600 && !expanded ? (
               <>
-                <div
-                  ref={contentRef}
-                  className={
-                    !expanded ? "relative overflow-hidden" : undefined
-                  }
-                  style={
-                    !expanded ? { maxHeight: CLAMP_HEIGHT } : undefined
-                  }
+                <p>{article.summary.slice(0, 600).trim()}...</p>
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="mt-1 text-muted-foreground hover:text-foreground"
                 >
-                  <MarkdownContent content={article.content} />
-                  {!expanded && overflows && (
-                    <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
-                  )}
-                </div>
-                {overflows && (
+                  Read more
+                </button>
+              </>
+            ) : (
+              <>
+                <p>{article.summary}</p>
+                {article.summary.length > 600 && (
                   <button
-                    onClick={() => setExpanded(!expanded)}
+                    onClick={() => setExpanded(false)}
                     className="mt-1 text-muted-foreground hover:text-foreground"
                   >
-                    {expanded ? "Show less" : "Read more"}
+                    Show less
                   </button>
                 )}
               </>
-            ) : article.summary ? (
-              <>
-                {article.summary.length > 600 && !expanded ? (
-                  <>
-                    <p>{article.summary.slice(0, 600).trim()}...</p>
-                    <button
-                      onClick={() => setExpanded(true)}
-                      className="mt-1 text-muted-foreground hover:text-foreground"
-                    >
-                      Read more
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p>{article.summary}</p>
-                    {article.summary.length > 600 && (
-                      <button
-                        onClick={() => setExpanded(false)}
-                        className="mt-1 text-muted-foreground hover:text-foreground"
-                      >
-                        Show less
-                      </button>
-                    )}
-                  </>
-                )}
-              </>
-            ) : null}
+            )}
           </div>
         )}
         <div className="flex flex-wrap gap-1.5">

@@ -10,7 +10,6 @@ interface PublicArticle {
   title: string;
   url: string;
   summary: string | null;
-  content: string | null;
   publishedAt: Date;
   dateEstimated: boolean;
   author: string | null;
@@ -125,7 +124,6 @@ export async function publicFeed(
     title: article.title,
     url: article.url,
     summary: article.summary,
-    content: article.content,
     publishedAt: article.publishedAt,
     dateEstimated: article.dateEstimated,
     author: article.author,
