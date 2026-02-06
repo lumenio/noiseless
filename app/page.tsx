@@ -22,7 +22,7 @@ export default async function HomePage() {
   return (
     <main className="container mx-auto max-w-2xl px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Explore</h1>
+        <h1 className="font-heading text-2xl font-bold">Explore</h1>
         <p className="mt-1 text-muted-foreground">
           Fresh articles from our curated sources
         </p>

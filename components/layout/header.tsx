@@ -35,7 +35,7 @@ export function Header({ user }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 max-w-6xl items-center px-4">
-        <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-bold">
+        <Link href={user ? "/feed" : "/"} className="flex items-center gap-2 font-heading font-bold">
           <Image src="/logo.svg" alt="" width={20} height={20} className="dark:invert" />
           Noiseless
         </Link>
