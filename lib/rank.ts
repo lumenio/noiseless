@@ -24,6 +24,8 @@ interface RankedArticle {
   };
   topics: { slug: string; label: string }[];
   score: number;
+  likes: number;
+  saves: number;
   candidateSources: string[];
   scoreBreakdown: {
     topicRelevance: number;
@@ -195,6 +197,8 @@ export async function rankFeed(
         label: t.topic.label,
       })),
       score,
+      likes: article.stats?.likes ?? 0,
+      saves: article.stats?.saves ?? 0,
       candidateSources,
       scoreBreakdown: {
         topicRelevance,

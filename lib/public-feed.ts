@@ -20,6 +20,8 @@ interface PublicArticle {
   };
   topics: { slug: string; label: string }[];
   score: number;
+  likes: number;
+  saves: number;
   candidateSources: string[];
   scoreBreakdown: {
     topicRelevance: number;
@@ -137,6 +139,8 @@ export async function publicFeed(
       label: t.topic.label,
     })),
     score: 0,
+    likes: 0,
+    saves: 0,
     candidateSources: ["PUBLIC"],
     scoreBreakdown: {
       topicRelevance: 0,

@@ -89,7 +89,6 @@ export function FeedList({ initialItems, initialCursor, feedRequestId }: FeedLis
           key={article.id}
           article={article}
           onLike={(id) => handleInteraction(id, "like")}
-          onDislike={(id) => handleInteraction(id, "dislike")}
           onHide={(id) => handleInteraction(id, "hide")}
           onSave={(id) => handleInteraction(id, "save")}
           onImpression={logImpression}

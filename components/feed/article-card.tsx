@@ -3,14 +3,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ThumbsUp,
-  ThumbsDown,
-  EyeOff,
-  Bookmark,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Heart, EyeOff, Bookmark, ExternalLink } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "@/lib/time";
 
@@ -29,6 +27,8 @@ export interface ArticleData {
   };
   topics: { slug: string; label: string }[];
   score: number;
+  likes: number;
+  saves: number;
   candidateSources: string[];
   scoreBreakdown: {
     topicRelevance: number;
@@ -43,7 +43,6 @@ export interface ArticleData {
 interface ArticleCardProps {
   article: ArticleData;
   onLike?: (id: string) => void;
-  onDislike?: (id: string) => void;
   onHide?: (id: string) => void;
   onSave?: (id: string) => void;
   onImpression?: (id: string) => void;
@@ -52,16 +51,13 @@ interface ArticleCardProps {
 export function ArticleCard({
   article,
   onLike,
-  onDislike,
   onHide,
   onSave,
   onImpression,
 }: ArticleCardProps) {
   const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [showWhy, setShowWhy] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const impressionLogged = useRef(false);
@@ -85,22 +81,8 @@ export function ArticleCard({
 
   if (hidden) return null;
 
-  function getWhyReason() {
-    const reasons: string[] = [];
-    if (article.scoreBreakdown.subscribed > 0) {
-      reasons.push(`Subscribed to ${article.feedSource.title}`);
-    }
-    if (article.scoreBreakdown.topicRelevance > 0.5) {
-      reasons.push("Matches your topic interests (high relevance)");
-    } else if (article.scoreBreakdown.topicRelevance > 0) {
-      reasons.push("Related to your topic interests");
-    }
-    if (article.candidateSources.includes("TRENDING")) {
-      reasons.push("Trending today");
-    }
-    if (reasons.length === 0) reasons.push("Exploring new content for you");
-    return reasons;
-  }
+  const likeCount = article.likes + (liked ? 1 : 0);
+  const saveCount = article.saves + (saved ? 1 : 0);
 
   return (
     <article ref={ref} className="border-b border-border pb-6">
@@ -174,76 +156,65 @@ export function ArticleCard({
             </Badge>
           ))}
         </div>
-        {(onLike || onDislike || onHide || onSave) && (
-          <>
+        {(onLike || onHide || onSave) && (
+          <TooltipProvider>
             <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setLiked(!liked);
-                  setDisliked(false);
-                  onLike?.(article.id);
-                }}
-                className={liked ? "text-primary" : ""}
-              >
-                <ThumbsUp className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setDisliked(!disliked);
-                  setLiked(false);
-                  onDislike?.(article.id);
-                }}
-                className={disliked ? "text-destructive" : ""}
-              >
-                <ThumbsDown className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSaved(!saved);
-                  onSave?.(article.id);
-                }}
-                className={saved ? "text-primary" : ""}
-              >
-                <Bookmark className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setHidden(true);
-                  onHide?.(article.id);
-                }}
-              >
-                <EyeOff className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowWhy(!showWhy)}
-                className="ml-auto text-xs text-muted-foreground"
-              >
-                Why this?
-                {showWhy ? (
-                  <ChevronUp className="ml-1 h-3 w-3" />
-                ) : (
-                  <ChevronDown className="ml-1 h-3 w-3" />
-                )}
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setLiked(!liked);
+                      onLike?.(article.id);
+                    }}
+                    className={liked ? "text-primary" : ""}
+                  >
+                    <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
+                    {likeCount > 0 && (
+                      <span className="ml-1 text-xs">{likeCount}</span>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Like</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setSaved(!saved);
+                      onSave?.(article.id);
+                    }}
+                    className={saved ? "text-primary" : ""}
+                  >
+                    <Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
+                    {saveCount > 0 && (
+                      <span className="ml-1 text-xs">{saveCount}</span>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Bookmark</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-auto"
+                    onClick={() => {
+                      setHidden(true);
+                      onHide?.(article.id);
+                    }}
+                  >
+                    <EyeOff className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Hide from feed</TooltipContent>
+              </Tooltip>
             </div>
-            {showWhy && (
-              <div className="rounded-md bg-muted/50 p-3 text-xs text-muted-foreground space-y-1">
-                {getWhyReason().map((reason, i) => (
-                  <p key={i}>· {reason}</p>
-                ))}
-              </div>
-            )}
-          </>
+          </TooltipProvider>
         )}
       </div>
     </article>
