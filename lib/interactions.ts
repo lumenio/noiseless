@@ -20,6 +20,16 @@ export async function recordInteraction(
     data: { userId, articleId, type, value },
   });
 
+  // Atomically increment ArticleStats so counts are visible immediately
+  if (type === "LIKE" || type === "SAVE") {
+    const field = type === "LIKE" ? "likes" : "saves";
+    await prisma.articleStats.upsert({
+      where: { articleId },
+      create: { articleId, [field]: 1 },
+      update: { [field]: { increment: 1 } },
+    });
+  }
+
   // Update topic weights for relevant interaction types
   if (["LIKE", "DISLIKE", "HIDE", "SAVE"].includes(type)) {
     const article = await prisma.article.findUnique({

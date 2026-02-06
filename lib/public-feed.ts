@@ -102,6 +102,7 @@ export async function publicFeed(
           topics: { include: { topic: true } },
         },
       },
+      stats: true,
     },
     orderBy: [{ dateEstimated: "asc" }, { publishedAt: "desc" }, { id: "desc" }],
     take: PAGE_SIZE * OVERFETCH_MULTIPLIER,
@@ -139,8 +140,8 @@ export async function publicFeed(
       label: t.topic.label,
     })),
     score: 0,
-    likes: 0,
-    saves: 0,
+    likes: article.stats?.likes ?? 0,
+    saves: article.stats?.saves ?? 0,
     candidateSources: ["PUBLIC"],
     scoreBreakdown: {
       topicRelevance: 0,
