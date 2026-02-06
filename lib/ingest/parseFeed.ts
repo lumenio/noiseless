@@ -71,7 +71,7 @@ export async function parseFeed(
     .map((item) => {
       const rawContent = item.content || item["content:encoded"] || item.contentSnippet || item.summary || "";
       return {
-        title: item.title!.trim(),
+        title: he.decode(item.title!.trim()),
         url: (item.link || item.guid || "").trim(),
         guid: item.guid?.trim() || null,
         author: item.creator || item["dc:creator"] || null,

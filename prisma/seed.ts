@@ -1,6 +1,7 @@
 import { PrismaClient } from "../lib/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
+import he from "he";
 import feeds from "../data/feeds.json";
 
 const connectionString =
@@ -44,11 +45,11 @@ async function main() {
     const source = await prisma.feedSource.upsert({
       where: { url: feed.url },
       update: {
-        title: feed.title,
+        title: he.decode(feed.title),
         siteUrl: feed.siteUrl,
       },
       create: {
-        title: feed.title,
+        title: he.decode(feed.title),
         url: feed.url,
         siteUrl: feed.siteUrl,
         isPreinstalled: true,
